@@ -1,9 +1,17 @@
 #include "EngineCore.h"
 #include "Transform.h"
+#include "Scene.h"
 
 IMPLEMENT_DYNAMIC_CLASS(Transform);
 
-Transform::Transform() : 
+void Transform::Update()
+{
+	if (owner != nullptr && owner->GetParentScene() != nullptr) {
+		PredictTransform(owner->GetParentScene()->timerTransformSync);
+	}
+}
+
+Transform::Transform() :
 	position(Vec2::Zero), rotation(0), scale(Vec2(1))
 {
 }
@@ -41,20 +49,35 @@ void Transform::Scale(const Vec2& delta)
 	scale *= delta;
 }
 
+void Transform::PredictTransform(float _time)
+{
+	Vec2 nextPos;
+	int nextRotation = 0;
+	Vec2 nextScale;
+
+	position = Vec2::Lerp(position, nextPos, _time);
+	scale = nextScale;
+}
+
 void Transform::Serialize(RakNet::BitStream& bitStream) const
 {
-	bitStream.Write(position.x);
-	bitStream.Write(position.y);
-	bitStream.Write(rotation);
-	bitStream.Write(scale.x);
-	bitStream.Write(scale.y);
+	if (owner == nullptr || owner->GetParentScene() == nullptr) return;
+
+	if (owner->GetParentScene()->shouldTransformSync) {
+		bitStream.Write(position.x);
+		bitStream.Write(position.y);
+		bitStream.Write(rotation);
+		bitStream.Write(scale.x);
+		bitStream.Write(scale.y);
+		owner->GetParentScene()->shouldTransformSync = false;
+	}
 }
 
 void Transform::Deserialize(RakNet::BitStream& bitStream)
 {
-	bitStream.Read(position.x);
-	bitStream.Read(position.y);
-	bitStream.Read(rotation);
-	bitStream.Read(scale.x);
-	bitStream.Read(scale.y);
+	bitStream.Read(nextPos.x);
+	bitStream.Read(nextPos.y);
+	bitStream.Read(nextRotation);
+	bitStream.Read(nextScale.x);
+	bitStream.Read(nextScale.y);
 }

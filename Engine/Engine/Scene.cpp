@@ -230,6 +230,17 @@ void Scene::PostUpdate()
 	}
 }
 
+void Scene::UpdateTransformSync()
+{
+	if (!shouldTransformSync) {
+		timerTransformSync += Time::Instance().DeltaTime();
+	}
+	if (timerTransformSync > transformSyncInterval) {
+		shouldTransformSync = true;
+		LOG("SYNCING");
+	}
+}
+
 void Scene::InvokeRPC(RakNet::BitStream& bitStream)
 {
 	STRCODE entityID;
