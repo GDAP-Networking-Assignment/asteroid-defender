@@ -37,4 +37,8 @@ private:
 	RakNet::RakNetGUID serverGUID;
 
 	friend class Engine;
+
+public:
+	void SendPacket(RakNet::BitStream& bs);
 };
+

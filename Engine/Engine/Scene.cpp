@@ -230,6 +230,23 @@ void Scene::PostUpdate()
 	}
 }
 
+void Scene::InvokeRPC(RakNet::BitStream& bitStream)
+{
+	STRCODE entityID;
+	bitStream.Read(entityID);
+
+	for (const auto entity : entities) {
+		if (entity->GetUid() == entityID) {
+			STRCODE componentID;
+			bitStream.Read(componentID);
+			NetworkRPC* networkRPC = (NetworkRPC*)entity->GetComponentByUiD(componentID);
+			ASSERT(networkRPC != nullptr, "Component is not a NetworkRPC");
+			networkRPC->InvokeRPC(bitStream);
+			break;
+		}
+	}
+}
+
 void Scene::Destroy()
 {
 	for (Entity* entity : entities)

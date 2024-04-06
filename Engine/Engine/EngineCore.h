@@ -52,6 +52,9 @@
 #include <RakSleep.h>
 #include <BitStream.h>
 #include "NetworkCommon.h"
+#include "NetworkRPC.h"
+#include "NetworkClient.h"
+#include "NetworkServer.h"
 
 // Engine
 #include "TypeClass.h"
