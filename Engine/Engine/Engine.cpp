@@ -13,8 +13,7 @@
 #include "CollisionSystem.h"
 #include "Component.h"
 
-#include "NetworkClient.h"
-#include "NetworkServer.h"
+#include "NetworkEngine.h"
 
 extern void Engine_Register();
 
@@ -23,9 +22,11 @@ void Engine::Initialize()
 	Engine_Register();
 
 	int serverClientChoice = -1;
-	std::cout << "Server [0] or Client [1]: ";
+	std::cout << "Server [0] or Client [1] or Single Player [2]: ";
 	std::cin >> serverClientChoice;
-	(serverClientChoice == 0 ? NetworkServer::Instance().Initialize() : NetworkClient::Instance().Initialize());
+	if (serverClientChoice != 2) {
+		NetworkEngine::Instance().Initialize((serverClientChoice == 0));
+	}
 
 	// Load the managers
 	AudioSystem::Instance().Load("../Assets/AudioSystem.json");
@@ -57,11 +58,8 @@ void Engine::GameLoop()
 	{
 		Time::Instance().Update();
 
-		// --------------------- Network Update ---------------------
-		NetworkClient::Instance().Update();
-		NetworkServer::Instance().Update();
-
 		// --------------------- Pre-update Phase ---------------------
+		NetworkEngine::Instance().PreUpdate();
 		SceneManager::Instance().PreUpdate();
 
 		// --------------------- Update Phase ---------------------
@@ -71,12 +69,13 @@ void Engine::GameLoop()
 
 		// --------------------- Post-update Phase ---------------------
 		SceneManager::Instance().PostUpdate();
+		NetworkEngine::Instance().PostUpdate();
 
 		// --------------------- Input Phase ---------------------
 		InputSystem::Instance().Update();
 
 		// --------------------- Network System Update ---------------------
-		if (NetworkServer::Instance().IsInitialized())
+		if (NetworkEngine::Instance().IsServer())
 		{
 			SceneManager::Instance().NetworkUpdate();
 		}

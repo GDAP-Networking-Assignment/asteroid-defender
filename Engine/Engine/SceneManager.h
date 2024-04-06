@@ -76,6 +76,7 @@ private:
 	friend class Engine;
 	friend class NetworkClient;
 	friend class NetworkServer;
+	friend class NetworkEngine;
 };
 
 #endif // !_SCENE_MANAGER_H_
