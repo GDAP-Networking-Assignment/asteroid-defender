@@ -35,7 +35,7 @@ void Engine::Initialize()
 	AudioSystem::Instance().Initialize();
 	AssetManager::Instance().Initialize();
 
-	RenderSystem::Instance().Initialize();
+	RenderSystem::Instance().Initialize(NetworkEngine::Instance().IsClient());
 	SceneManager::Instance().Load();
 
 	SceneManager::Instance().Initialize();
@@ -63,6 +63,7 @@ void Engine::GameLoop()
 		SceneManager::Instance().PreUpdate();
 
 		// --------------------- Update Phase ---------------------
+		InputSystem::Instance().Update();
 		SceneManager::Instance().Update();
 		RenderSystem::Instance().Update();
 		CollisionSystem::Instance().Update();
@@ -70,14 +71,5 @@ void Engine::GameLoop()
 		// --------------------- Post-update Phase ---------------------
 		SceneManager::Instance().PostUpdate();
 		NetworkEngine::Instance().PostUpdate();
-
-		// --------------------- Input Phase ---------------------
-		InputSystem::Instance().Update();
-
-		// --------------------- Network System Update ---------------------
-		if (NetworkEngine::Instance().IsServer())
-		{
-			SceneManager::Instance().NetworkUpdate();
-		}
 	}
 }

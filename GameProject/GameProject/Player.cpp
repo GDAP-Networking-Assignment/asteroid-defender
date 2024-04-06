@@ -3,6 +3,7 @@
 #include "Sprite.h"
 #include "TextureAsset.h"
 #include "BoxCollider.h"
+#include "NetworkEngine.h"
 
 #define NDEBUG_PLAYER
 
@@ -19,12 +20,8 @@ void Player::Initialize()
 
 void Player::Update() 
 {
-	if (NetworkServer::Instance().IsInitialized() == false) {
+	if (NetworkEngine::Instance().IsClient()) {
 		HandleInput();
-	}
-
-	// SendRPC if we are a client
-	if (NetworkClient::Instance().IsInitialized() == true) {
 		if (movement != Vec2::Zero) {
 			SendRPC();
 		}
@@ -34,9 +31,9 @@ void Player::Update()
 	if (movement != Vec2::Zero) {
 		// Move the player
 		if (networkedEntity) {
-			networkedEntity->GetTransform().position += movement * (speed * Time::Instance().DeltaTime());
+			networkedEntity->GetTransform().position += movement;// *(speed * Time::Instance().DeltaTime());
 		}
-		owner->GetTransform().position += movement * (speed * Time::Instance().DeltaTime());
+		owner->GetTransform().position += movement;// *(speed * Time::Instance().DeltaTime());
 
 		if (collider == nullptr)
 		{
@@ -81,6 +78,7 @@ void Player::Load(json::JSON& node)
 void Player::HandleInput()
 {
 	movement = Vec2::Zero;
+	float deltaSpeed = speed * Time::Instance().DeltaTime();
 	const InputSystem& input = InputSystem::Instance();
 
 	if (input.IsKeyPressed(SDLK_KP_ENTER) && networkedEntity == nullptr)
@@ -93,21 +91,21 @@ void Player::HandleInput()
 
 	// Handle horizontal movement
 	if (input.IsKeyPressed(SDLK_LEFT) || input.IsKeyPressed(SDLK_a) || input.IsGamepadButtonPressed(0, SDL_CONTROLLER_BUTTON_DPAD_LEFT)) {
-		movement.x -= 1;
+		movement.x -= deltaSpeed;
 		if (networkedEntity) networkedEntity->GetTransform().position.x -= 1;
 	}
 	if (input.IsKeyPressed(SDLK_RIGHT) || input.IsKeyPressed(SDLK_d) || input.IsGamepadButtonPressed(0, SDL_CONTROLLER_BUTTON_DPAD_RIGHT)) {
-		movement.x += 1;
+		movement.x += deltaSpeed;
 		if (networkedEntity) networkedEntity->GetTransform().position.x += 1;
 	}
 
 	// Handle vertical movement
 	if (input.IsKeyPressed(SDLK_UP) || input.IsKeyPressed(SDLK_w) || input.IsGamepadButtonPressed(0, SDL_CONTROLLER_BUTTON_DPAD_UP)) {
-		movement.y -= 1;
+		movement.y -= deltaSpeed;
 		if (networkedEntity) networkedEntity->GetTransform().position.y -= 1;
 	}
 	if (input.IsKeyPressed(SDLK_DOWN) || input.IsKeyPressed(SDLK_s) || input.IsGamepadButtonPressed(0, SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
-		movement.y += 1;
+		movement.y += deltaSpeed;
 		if (networkedEntity) networkedEntity->GetTransform().position.y += 1;
 	}
 
@@ -141,7 +139,7 @@ void Player::SendRPC()
 	bitStream.Write(movement.x);
 	bitStream.Write(movement.y);
 
-	NetworkClient::Instance().SendPacket(bitStream);
+	NetworkEngine::Instance().SendPacket(bitStream);
 }
 
 void Player::RPC(RakNet::BitStream& bitStream)

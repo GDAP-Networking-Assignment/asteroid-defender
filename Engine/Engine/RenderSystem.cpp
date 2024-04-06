@@ -3,7 +3,7 @@
 #include "Renderable.h"
 #include "Scene.h"
 
-void RenderSystem::Initialize()
+void RenderSystem::Initialize(bool createRenderer)
 {
 	//Pulls the window information from the RenderSettings file located in Assets
 	std::ifstream inputStream("../Assets/RenderSettings.json");
@@ -50,18 +50,26 @@ void RenderSystem::Initialize()
 		std::cout << "Fullscreen wasn't found in RenderSettings. Going with the Default instead.";
 	}
 
-	_window = SDL_CreateWindow(_name.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, _width, _height, _fullScreen);
-	_renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED);
+	if (createRenderer) {
+		_window = SDL_CreateWindow(_name.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, _width, _height, _fullScreen);
+		_renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED);
+	}
 }
 
 void RenderSystem::Destroy()
 {
-	SDL_DestroyWindow(_window);
-	SDL_DestroyRenderer(_renderer);
+	if (HasWindow()) {
+		SDL_DestroyWindow(_window);
+	};
+	if (HasRenderer()) {
+		SDL_DestroyRenderer(_renderer);
+	}
 }
 
 void RenderSystem::Update()
 {
+	if (!HasRenderer()) return;
+
 	SDL_RenderClear(_renderer);
 	SDL_SetRenderDrawColor(_renderer, _backgroundColor.r, _backgroundColor.g, _backgroundColor.b, _backgroundColor.a);
 
@@ -116,7 +124,9 @@ void RenderSystem::WindowSize(int width, int height)
 	{
 		_width = width;
 		_height = height;
-		SDL_SetWindowSize(_window, _width, _height);
+		if (!HasWindow()) {
+			SDL_SetWindowSize(_window, _width, _height);
+		}
 	}
 	else
 	{

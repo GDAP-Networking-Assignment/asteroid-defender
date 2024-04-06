@@ -1,5 +1,7 @@
 #include "EngineCore.h"
 #include "InputSystem.h"
+#include "NetworkEngine.h"
+#include "RenderSystem.h"
 
 #define NDEBUG_INPUT
 
@@ -20,6 +22,7 @@ void InputSystem::Initialize()
 
 void InputSystem::Update()
 {
+	if (NetworkEngine::Instance().IsServer()) return;
 
 	// Update the state of the input system every frame
 	   // Handle events

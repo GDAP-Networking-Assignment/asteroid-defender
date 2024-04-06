@@ -23,9 +23,12 @@ public:
 	void WindowSize(int width, int height);
 	IVec2 GetWindowSize() const;
 
+	bool HasWindow() { return _window != nullptr; }
+	bool HasRenderer() { return _renderer != nullptr; }
+
 protected:
 	void Load();
-	void Initialize();
+	void Initialize(bool createRenderer = true);
 	void Update();
 	void Destroy();
 

@@ -3,8 +3,6 @@
 #ifndef NETWORK_ENGINE_H
 #define NETWORK_ENGINE_H
 
-#include "SceneManager.h"
-
 enum class NetworkState {
     INITIALIZE_NETWORK,
     WAITING_FOR_CONNECTION,
@@ -14,6 +12,8 @@ enum class NetworkState {
 };
 
 class NetworkEngine {
+    DECLARE_SINGLETON(NetworkEngine);
+
 public:
     bool IsClient() { return isClient; }
     bool IsServer() { return isServer; }
@@ -21,8 +21,8 @@ public:
 
 private:
     int port;
-    bool isServer;
-    bool isClient;
+    bool isServer = false;
+    bool isClient = false;
     std::string ipAddress;
     NetworkState state;
 

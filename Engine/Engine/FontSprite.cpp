@@ -136,6 +136,9 @@ void FontSprite::RegenerateOutput()
 
 	SDL_Surface* textSurface = TTF_RenderText_Solid((*font).GetFont(), text.c_str(), fontColor);
 	SDL_DestroyTexture(output);
-	output = SDL_CreateTextureFromSurface(&RenderSystem::Instance().GetRenderer(), textSurface);
+	output = nullptr;
+	if (RenderSystem::Instance().HasRenderer()) {
+		output = SDL_CreateTextureFromSurface(&RenderSystem::Instance().GetRenderer(), textSurface);
+	}
 	SDL_FreeSurface(textSurface);
 }

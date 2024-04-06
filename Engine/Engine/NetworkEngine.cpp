@@ -46,7 +46,7 @@ void NetworkEngine::InitializeNetwork()
 
 void NetworkEngine::LoadSettings()
 {
-	std::ifstream inputStream("..?Assets/NetworkSettings.json");
+	std::ifstream inputStream("../Assets/NetworkSettings.json");
 	std::string str((std::istreambuf_iterator<char>(inputStream)), std::istreambuf_iterator<char>());
 	json::JSON document = json::JSON::Load(str);
 

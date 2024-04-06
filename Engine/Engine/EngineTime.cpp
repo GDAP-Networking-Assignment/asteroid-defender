@@ -1,5 +1,6 @@
 #include "EngineCore.h"
 #include "EngineTime.h"
+#include "NetworkEngine.h"
 
 void Time::Initialize()
 {
@@ -19,6 +20,15 @@ void Time::Update()
 {
 	endTime = std::chrono::system_clock().now();
 	deltaTime = endTime - beginTime;
+
+	if (NetworkEngine::Instance().IsServer() && deltaTime.count() < 0.016666f) {
+		int sleepTime = (0.016666f - deltaTime.count()) * 1000;
+		std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
+
+		endTime = std::chrono::system_clock().now();
+		deltaTime = endTime - beginTime;
+	}
+
 	beginTime = endTime;
 	totalTime += deltaTime;
 	frameCount++;
