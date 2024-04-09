@@ -16,6 +16,12 @@
     <ClCompile Include="Bullet.cpp">
       <Filter>Source Files\Game</Filter>
     </ClCompile>
+    <ClCompile Include="AsteroidSpawner.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Asteroid.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameCore.h">
@@ -28,6 +34,12 @@
       <Filter>Header Files\Game</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="AsteroidSpawner.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Asteroid.h">
       <Filter>Header Files\Game</Filter>
     </ClInclude>
   </ItemGroup>
@@ -64,6 +76,15 @@
     </None>
     <None Include="..\Build\Assets\NetworkSettings.json">
       <Filter>Configuration Files</Filter>
+    </None>
+    <None Include="..\Build\Assets\Scenes\MainScene.json">
+      <Filter>Scenes</Filter>
+    </None>
+    <None Include="..\Build\Assets\meteorBig.asset">
+      <Filter>Assets\Textures</Filter>
+    </None>
+    <None Include="..\Build\Assets\meteorSmall.asset">
+      <Filter>Assets\Textures</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -114,6 +135,12 @@
       <Filter>Assets\Textures</Filter>
     </Image>
     <Image Include="..\Build\Assets\nottaco.png">
+      <Filter>Assets\Textures</Filter>
+    </Image>
+    <Image Include="..\Build\Assets\meteorBig.png">
+      <Filter>Assets\Textures</Filter>
+    </Image>
+    <Image Include="..\Build\Assets\meteorSmall.png">
       <Filter>Assets\Textures</Filter>
     </Image>
   </ItemGroup>

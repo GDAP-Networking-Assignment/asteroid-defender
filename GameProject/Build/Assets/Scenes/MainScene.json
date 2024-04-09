@@ -9,6 +9,12 @@
       },
       {
         "GUID": "Laser_2ffefe30-b2b5-4cfa-98d1-2cf6a6f7930e"
+      },
+      {
+        "GUID": "MeteorBig_a7319cea-2d19-4515-b910-7d10f6df0ec3"
+      },
+      {
+        "GUID": "MeteorSmall_48526c0d-ca5d-4681-8fe5-93726d5906fa"
       }
     ]
   },
@@ -17,39 +23,72 @@
     "GUID": "1a9e5171-c7ab-47d4-9af4-d490d1494201",
     "IsEnabled": true,
     "Entities": [
-        {
-            "Name": "Player",
-            "GUID": "1cc2cb0e-085b-43cf-9bfe-c47b5158b2bf",
-            "Transform": {
-              "GUID": "77919e8a-8f63-4e8a-886f-b038bbdc5e77",
-              "Position": [ 100.0, 200.0 ],
-              "Rotation": 0.0,
-              "Scale": [ 1.0, 1.0 ]
-            },
-            "Components": [
-                {
-                    "ClassName": "Sprite",
-                    "ClassData": {
-                      "GUID": "d8db5d8d-e65d-4f7a-b0eb-ebd55bd70c22",
-                      "Texture": "Ship_c50b2792-24af-4981-bcfa-a0014762b813"
-                    }
-                },
-                {
-                    "ClassName": "BoxCollider",
-                    "ClassData": {
-                      "GUID": "3312004f-5660-413f-b29b-554237b25edf"
-                    }
-                },
-                {
-                    "ClassName": "Player",
-                    "ClassData": {
-                      "GUID": "13fa2605-d562-4978-87d4-c7bc1ea24bd9",
-                      "Speed": 400.0,
-                      "DeathScene": "45f479c9-f110-43c5-be35-9fbbc5d7d694"
-                    }
-                }
-            ]
-        }
+      {
+        "Name": "Player",
+        "GUID": "1cc2cb0e-085b-43cf-9bfe-c47b5158b2bf",
+        "Transform": {
+          "GUID": "77919e8a-8f63-4e8a-886f-b038bbdc5e77",
+          "Position": [ 100.0, 200.0 ],
+          "Rotation": 0.0,
+          "Scale": [ 1.0, 1.0 ]
+        },
+        "Components": [
+          {
+            "ClassName": "Sprite",
+            "ClassData": {
+              "GUID": "d8db5d8d-e65d-4f7a-b0eb-ebd55bd70c22",
+              "Texture": "Ship_c50b2792-24af-4981-bcfa-a0014762b813"
+            }
+          },
+          {
+            "ClassName": "BoxCollider",
+            "ClassData": {
+              "GUID": "3312004f-5660-413f-b29b-554237b25edf"
+            }
+          },
+          {
+            "ClassName": "Player",
+            "ClassData": {
+              "GUID": "13fa2605-d562-4978-87d4-c7bc1ea24bd9",
+              "Speed": 400.0,
+              "DeathScene": "45f479c9-f110-43c5-be35-9fbbc5d7d694"
+            }
+
+          }
+        ]
+
+      },
+      {
+
+        "Name": "AsteroidSpawner",
+        "GUID": "e6fc8f24-8859-4ad2-b3f9-09bca34ffc83",
+        "Transform": {
+          "GUID": "0efa149a-c7dc-4c27-8c8d-8e4ef3a65db0"
+
+        },
+        "Components": [
+          {
+            "ClassName": "AsteroidSpawner",
+            "ClassData": {
+              "GUID": "11880b4d-720a-4386-aba3-851d3c76540b"
+
+            }
+
+          },
+          {
+            "ClassName": "Asteroid",
+            "ClassData": {
+              "GUID": "8735ed08-7982-4931-965b-ae3bc15baba8",
+              "velocity": "100.0,100.0",
+              "size": "10.0"
+            }
+          }
+        ]
+
+      }
+
+
+
     ]
   }
 }

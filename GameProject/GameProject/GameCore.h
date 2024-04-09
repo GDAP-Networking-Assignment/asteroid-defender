@@ -16,5 +16,7 @@
 #include "AudioSystem.h"
 #include "AssetManager.h"
 #include "SceneManager.h"
+#include "Bullet.h"
+#include "AsteroidSpawner.h"
 
 #endif // !_GAME_CORE_H_
