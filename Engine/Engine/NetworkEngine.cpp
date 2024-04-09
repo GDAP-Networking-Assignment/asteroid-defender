@@ -136,7 +136,7 @@ void NetworkEngine::ReceivePackets()
 
 void NetworkEngine::PostUpdate()
 {
-	if (!isClient && !isServer) return;
+	if (!isServer) return;
 
-	SceneManager::Instance().NetworkUpdate();
+	//SceneManager::Instance().NetworkUpdate();
 }

@@ -4,6 +4,7 @@
 #include "TextureAsset.h"
 #include "BoxCollider.h"
 #include "NetworkEngine.h"
+#include "Bullet.h"
 
 #define NDEBUG_PLAYER
 
@@ -12,7 +13,6 @@ IMPLEMENT_DYNAMIC_CLASS(Player)
 void Player::Initialize()
 {
 	Component::Initialize();
-	start_pos = owner->GetTransform().position;
 	collider = (BoxCollider*)owner->GetComponent("BoxCollider");
 
 	RegisterRPC(GetHashCode("RPC"), std::bind(&Player::RPC, this, std::placeholders::_1));
@@ -22,6 +22,7 @@ void Player::Update()
 {
 	if (NetworkEngine::Instance().IsClient()) {
 		HandleInput();
+		HandleFire();
 		if (movement != Vec2::Zero) {
 			SendRPC();
 		}
@@ -31,9 +32,9 @@ void Player::Update()
 	if (movement != Vec2::Zero) {
 		// Move the player
 		if (networkedEntity) {
-			networkedEntity->GetTransform().position += movement;// *(speed * Time::Instance().DeltaTime());
+			networkedEntity->GetTransform().position += movement;
 		}
-		owner->GetTransform().position += movement;// *(speed * Time::Instance().DeltaTime());
+		owner->GetTransform().position += movement;
 
 		if (collider == nullptr)
 		{
@@ -47,13 +48,7 @@ void Player::Update()
 				continue;
 			}
 
-			Scene* current_scene = SceneManager::Instance().GetActiveScene();
-			if (SceneManager::Instance().SetActiveScene(game_over_scene))
-			{
-				current_scene->SetEnabled(false);
-			}
-
-			owner->GetTransform().position = start_pos;
+			// Take Damage
 		}
 	}
 	movement = Vec2::Zero;
@@ -81,8 +76,10 @@ void Player::HandleInput()
 	float deltaSpeed = speed * Time::Instance().DeltaTime();
 	const InputSystem& input = InputSystem::Instance();
 
-	if (input.IsKeyPressed(SDLK_KP_ENTER) && networkedEntity == nullptr)
+	if (input.IsKeyPressed(SDLK_RETURN) && networkedEntity == nullptr)
 	{
+		LOG("Explode");
+
 		networkedEntity = SceneManager::Instance().CreateEntity();
 		Sprite* sprite = (Sprite*)networkedEntity->CreateComponent("Sprite");
 		TextureAsset* asset = (TextureAsset*)AssetManager::Instance().GetAsset("Explosion_435e0fce-7b11-409c-858e-af4bd7fe99c0");
@@ -90,29 +87,23 @@ void Player::HandleInput()
 	}
 
 	// Handle horizontal movement
-	if (input.IsKeyPressed(SDLK_LEFT) || input.IsKeyPressed(SDLK_a) || input.IsGamepadButtonPressed(0, SDL_CONTROLLER_BUTTON_DPAD_LEFT)) {
+	if (input.IsKeyPressed(SDLK_LEFT) || input.IsKeyPressed(SDLK_a)) {
 		movement.x -= deltaSpeed;
 		if (networkedEntity) networkedEntity->GetTransform().position.x -= 1;
 	}
-	if (input.IsKeyPressed(SDLK_RIGHT) || input.IsKeyPressed(SDLK_d) || input.IsGamepadButtonPressed(0, SDL_CONTROLLER_BUTTON_DPAD_RIGHT)) {
+	if (input.IsKeyPressed(SDLK_RIGHT) || input.IsKeyPressed(SDLK_d)) {
 		movement.x += deltaSpeed;
 		if (networkedEntity) networkedEntity->GetTransform().position.x += 1;
 	}
 
 	// Handle vertical movement
-	if (input.IsKeyPressed(SDLK_UP) || input.IsKeyPressed(SDLK_w) || input.IsGamepadButtonPressed(0, SDL_CONTROLLER_BUTTON_DPAD_UP)) {
+	if (input.IsKeyPressed(SDLK_UP) || input.IsKeyPressed(SDLK_w)) {
 		movement.y -= deltaSpeed;
 		if (networkedEntity) networkedEntity->GetTransform().position.y -= 1;
 	}
-	if (input.IsKeyPressed(SDLK_DOWN) || input.IsKeyPressed(SDLK_s) || input.IsGamepadButtonPressed(0, SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
+	if (input.IsKeyPressed(SDLK_DOWN) || input.IsKeyPressed(SDLK_s)) {
 		movement.y += deltaSpeed;
 		if (networkedEntity) networkedEntity->GetTransform().position.y += 1;
-	}
-
-	// Handle gamepad analog stick input
-	if (movement == Vec2::Zero) {
-		movement.x = input.GetGamepadAxisState(0, SDL_CONTROLLER_AXIS_LEFTX);
-		movement.y = input.GetGamepadAxisState(0, SDL_CONTROLLER_AXIS_LEFTY);
 	}
 
 	// Normalize the direction vector if it's not zero
@@ -121,6 +112,32 @@ void Player::HandleInput()
 	#ifdef DEBUG_PLAYER
 			LOG("Input: " << dir.x << ", " << dir.y);
 	#endif
+	}
+}
+
+void Player::HandleFire() {
+	if (fired) {
+		fireCounter += Time::Instance().DeltaTime();
+	}
+
+	if (fireCounter > fireCooldown) {
+		fired = false;
+		fireCounter = 0;
+	}
+
+	const InputSystem& input = InputSystem::Instance();
+	if (input.IsMouseButtonPressed(SDL_BUTTON_LEFT) && !fired) {
+		fired = true;
+		fireCounter = 0;
+
+		int mouseX, mouseY;
+		const Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
+		Vec2 mousePos = { (float)mouseX, (float)mouseY };
+
+		Entity* newBullet = owner->GetParentScene()->CreateEntity();
+		Bullet* bullet = (Bullet*)newBullet->CreateComponent("Bullet");
+		newBullet->GetTransform().position = owner->GetTransform().position;
+		bullet->SetTarget(mousePos);
 	}
 }
 

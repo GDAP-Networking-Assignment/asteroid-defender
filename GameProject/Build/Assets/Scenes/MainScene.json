@@ -2,18 +2,18 @@
   "AssetManager": {
     "Assets": [
       {
-        "GUID": "awooga"
-      },
-      {
-        "GUID": "girl"
+        "GUID": "Ship_c50b2792-24af-4981-bcfa-a0014762b813"
       },
       {
         "GUID": "Explosion_435e0fce-7b11-409c-858e-af4bd7fe99c0"
+      },
+      {
+        "GUID": "Laser_2ffefe30-b2b5-4cfa-98d1-2cf6a6f7930e"
       }
     ]
   },
   "Scene": {
-    "Name": "Level01",
+    "Name": "MainScene",
     "GUID": "1a9e5171-c7ab-47d4-9af4-d490d1494201",
     "IsEnabled": true,
     "Entities": [
@@ -24,19 +24,14 @@
               "GUID": "77919e8a-8f63-4e8a-886f-b038bbdc5e77",
               "Position": [ 100.0, 200.0 ],
               "Rotation": 0.0,
-              "Scale": [ 0.5, 0.5 ]
+              "Scale": [ 1.0, 1.0 ]
             },
             "Components": [
                 {
-                    "ClassName": "AnimatedSprite",
+                    "ClassName": "Sprite",
                     "ClassData": {
                       "GUID": "d8db5d8d-e65d-4f7a-b0eb-ebd55bd70c22",
-                      "Texture": "girl",
-                      "SpriteSheet": {
-                          "Rows": 1,
-                          "Columns": 20,
-                          "Frames": 20
-                      }
+                      "Texture": "Ship_c50b2792-24af-4981-bcfa-a0014762b813"
                     }
                 },
                 {
@@ -54,32 +49,7 @@
                     }
                 }
             ]
-        },
-      {
-        "Name": "Enemy",
-        "GUID": "uwu2",
-        "Transform": {
-          "GUID": "1d7737fa-abfd-457c-8a1f-b46a4019cd8d",
-          "Position": [1000.0, 250.0],
-          "Rotation": 0.0,
-          "Scale": [0.4, 0.4]
-        },
-        "Components": [
-            {
-                "ClassName": "Sprite",
-                "ClassData": {
-                  "GUID": "32dea180-80ca-4e88-acb7-1bf4a68ebfa5",
-                  "Texture": "awooga"
-                }
-            },
-            {
-                "ClassName": "CircleCollider",
-                "ClassData": {
-                  "GUID": "b99ca8cc-f97d-4e98-9155-7312373a1727"
-                }
-            }
-        ]
-      }
+        }
     ]
   }
 }

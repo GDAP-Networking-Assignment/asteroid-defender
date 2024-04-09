@@ -32,4 +32,6 @@ public:
     Vec2 nextPos;
     int nextRotation = 0;
     Vec2 nextScale;
+
+    const float interpolationTime = 0.5f;
 };

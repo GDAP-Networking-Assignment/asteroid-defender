@@ -16,14 +16,18 @@ public:
     void Load(json::JSON&) override;
 private:
     float speed = 5.0f;
-    Vec2 start_pos;
     BoxCollider* collider = nullptr;
     STRCODE game_over_scene = -1;
-
     Entity* networkedEntity = nullptr;
+
+    float fireCooldown = 0.5;
+    float fireCounter = 0;
+    bool fired = false;
 
 private:
     void HandleInput();
+    void HandleFire();
+
     void SendRPC();
     void RPC(RakNet::BitStream& bitStream);
 

@@ -1,6 +1,7 @@
 #include "EngineCore.h"
 #include "Transform.h"
 #include "Scene.h"
+#include "NetworkEngine.h"
 
 IMPLEMENT_DYNAMIC_CLASS(Transform);
 
@@ -62,22 +63,31 @@ void Transform::PredictTransform(float _time)
 void Transform::Serialize(RakNet::BitStream& bitStream) const
 {
 	if (owner == nullptr || owner->GetParentScene() == nullptr) return;
-
 	if (owner->GetParentScene()->shouldTransformSync) {
-		bitStream.Write(position.x);
-		bitStream.Write(position.y);
-		bitStream.Write(rotation);
-		bitStream.Write(scale.x);
-		bitStream.Write(scale.y);
 		owner->GetParentScene()->shouldTransformSync = false;
 	}
+
+	bitStream.Write(position.x);
+	bitStream.Write(position.y);
+	bitStream.Write(rotation);
+	bitStream.Write(scale.x);
+	bitStream.Write(scale.y);
 }
 
 void Transform::Deserialize(RakNet::BitStream& bitStream)
 {
-	bitStream.Read(nextPos.x);
-	bitStream.Read(nextPos.y);
-	bitStream.Read(nextRotation);
-	bitStream.Read(nextScale.x);
-	bitStream.Read(nextScale.y);
+	if (NetworkEngine::Instance().IsServer()) {
+		bitStream.Read(position.x);
+		bitStream.Read(position.y);
+		bitStream.Read(rotation);
+		bitStream.Read(scale.x);
+		bitStream.Read(scale.y);
+	}
+	else {
+		bitStream.Read(nextPos.x);
+		bitStream.Read(nextPos.y);
+		bitStream.Read(nextRotation);
+		bitStream.Read(nextScale.x);
+		bitStream.Read(nextScale.y);
+	}
 }
