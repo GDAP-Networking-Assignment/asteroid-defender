@@ -9,8 +9,8 @@
 #include <cstdlib>
 #include <ctime>
 #include <vector>
-class AsteroidSpawner : public Component {
-	DECLARE_DYNAMIC_DERIVED_CLASS(AsteroidSpawner, Component)
+class AsteroidSpawner : public Asteroid {
+	DECLARE_DYNAMIC_DERIVED_CLASS(AsteroidSpawner, Asteroid)
 public:
     AsteroidSpawner();
     virtual ~AsteroidSpawner() override;

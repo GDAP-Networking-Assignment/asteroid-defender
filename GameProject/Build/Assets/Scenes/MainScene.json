@@ -79,7 +79,7 @@
             "ClassName": "Asteroid",
             "ClassData": {
               "GUID": "8735ed08-7982-4931-965b-ae3bc15baba8",
-              "velocity": "100.0,100.0",
+              "velocity": "0.0,10.0",
               "size": "10.0"
             }
           }

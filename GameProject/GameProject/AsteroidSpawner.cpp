@@ -15,15 +15,11 @@ AsteroidSpawner::~AsteroidSpawner() {
 void AsteroidSpawner::Initialize() {
     Component::Initialize();
     srand(static_cast<unsigned int>(time(nullptr))); // Seed for asteroid spawn position
-    sprite = (Sprite*)owner->CreateComponent("Sprite");
+  
     //sprite2 = (Sprite*)owner->GetComponent("Sprite");
-
-    sprite->SetTextureAsset(
     
-        (TextureAsset*)AssetManager::Instance().GetAsset("MeteorBig_a7319cea-2d19-4515-b910-7d10f6df0ec3")
-
-    );
-
+   
+   
     /*sprite2->SetTextureAsset(
 
         (TextureAsset*)AssetManager::Instance().GetAsset("MeteorSmall_48526c0d-ca5d-4681-8fe5-93726d5906fa")
@@ -47,8 +43,9 @@ void AsteroidSpawner::Update() {
 void AsteroidSpawner::SpawnAsteroid() {
     // Create a new asteroid entity at a random x position at the top of the screen
     Entity* asteroidEntity = owner->GetParentScene()->CreateEntity();
-    Asteroid* asteroid = (Asteroid*)asteroidEntity->CreateComponent("Asteroid");
-    asteroid->Initialize();
+    Asteroid* asteroid = (Asteroid*)asteroidEntity->GetComponent("Asteroid");
+    asteroidEntity->GetTransform().position = owner->GetTransform().position;
+  
 
 
 }

@@ -80,10 +80,10 @@
     <None Include="..\Build\Assets\Scenes\MainScene.json">
       <Filter>Scenes</Filter>
     </None>
-    <None Include="..\Build\Assets\meteorBig.asset">
+    <None Include="..\Build\Assets\meteorBig.png.asset">
       <Filter>Assets\Textures</Filter>
     </None>
-    <None Include="..\Build\Assets\meteorSmall.asset">
+    <None Include="..\Build\Assets\meteorSmall.png.asset">
       <Filter>Assets\Textures</Filter>
     </None>
   </ItemGroup>

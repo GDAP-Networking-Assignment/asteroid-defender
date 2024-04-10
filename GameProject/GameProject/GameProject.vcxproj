@@ -210,8 +210,8 @@
     <None Include="..\Build\Assets\AudioSystem.json" />
     <None Include="..\Build\Assets\girl.png.asset" />
     <None Include="..\Build\Assets\hitEffect03.wav.asset" />
-    <None Include="..\Build\Assets\meteorBig.asset" />
-    <None Include="..\Build\Assets\meteorSmall.asset" />
+    <None Include="..\Build\Assets\meteorBig.png.asset" />
+    <None Include="..\Build\Assets\meteorSmall.png.asset" />
     <None Include="..\Build\Assets\NetworkSettings.json" />
     <None Include="..\Build\Assets\nottaco.png.asset" />
     <None Include="..\Build\Assets\PAPYRUS.TTF.asset" />
