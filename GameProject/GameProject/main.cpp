@@ -8,7 +8,6 @@ int main(int argc, char** argv)
 
 	if (argc < 2) {
 		int serverClientChoice = -1;
-		std::cout << "No command line argument given\n";
 		std::cout << "Server [0] or Client [1]: ";
 		std::cin >> serverClientChoice;
 		Engine::Instance().Initialize(serverClientChoice);

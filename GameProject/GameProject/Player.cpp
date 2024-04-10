@@ -14,9 +14,7 @@ void Player::Initialize()
 {
 	Component::Initialize();
 	collider = (BoxCollider*)owner->GetComponent("BoxCollider");
-
 	RegisterRPC(GetHashCode("RPC"), std::bind(&Player::RPCMove, this, std::placeholders::_1));
-
 	RegisterRPC(GetHashCode("RPCSpawnBullet"), std::bind(&Player::RPCSpawnBullet, this, std::placeholders::_1));
 }
 
@@ -40,7 +38,7 @@ void Player::Update()
 
 		if (collider == nullptr)
 		{
-			LOG("no collider uwu");
+			LOG("No collider");
 			return;
 		}
 		for (const auto& other : collider->OnCollisionEnter())
@@ -169,28 +167,28 @@ void Player::SendRPCSpawnBullet(Bullet* bullet)
 	bitStream.Write(bullet->GetOwner()->GetTransform().position.x);
 	bitStream.Write(bullet->GetOwner()->GetTransform().position.y);
 
-	bitStream.Write(bullet->GetTarget().x);
-	bitStream.Write(bullet->GetTarget().y);
+	bitStream.Write(bullet->GetDirection().x);
+	bitStream.Write(bullet->GetDirection().y);
 
 	NetworkEngine::Instance().SendPacket(bitStream);
 }
 
 void Player::RPCSpawnBullet(RakNet::BitStream& bitStream)
 {
-	LOG("RPC BULLET");
 	Entity* entityBullet = owner->GetParentScene()->CreateEntity();
 	Bullet* bullet = (Bullet*)entityBullet->CreateComponent("Bullet");
 
-	Vec2 value;
-	bitStream.Read(value.x);
-	bitStream.Read(value.y);
+	Vec2 pos;
+	bitStream.Read(pos.x);
+	bitStream.Read(pos.y);
 
-	entityBullet->GetTransform().position.x = value.x;
-	entityBullet->GetTransform().position.y = value.y;
+	entityBullet->GetTransform().position.x = pos.x;
+	entityBullet->GetTransform().position.y = pos.y;
 
-	value = Vec2::Zero;
-	bitStream.Read(value.x);
-	bitStream.Read(value.y);
+	Vec2 direction;
+	bitStream.Read(direction.x);
+	bitStream.Read(direction.y);
+	bullet->SetDirection(direction);
 
-	bullet->SetTarget(value);
+	float test = RAD_TO_DEG(bullet->GetDirection().Angle());
 }

@@ -17,9 +17,7 @@ void Bullet::Initialize()
     sprite->SetTextureAsset(
         (TextureAsset*)AssetManager::Instance().GetAsset("Laser_2ffefe30-b2b5-4cfa-98d1-2cf6a6f7930e")
     );
-    owner->GetTransform().Rotate(RAD_TO_DEG(atan(direction.y / direction.x)) + 90);
-
-    owner->GetTransform().position = Vec2(500, 300);
+    owner->GetTransform().Rotate(RAD_TO_DEG(direction.Angle())+90);
 }
 void Bullet::Update() {
     // Move the player

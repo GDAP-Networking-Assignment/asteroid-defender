@@ -62,10 +62,10 @@ void Transform::PredictTransform(float _time)
 
 void Transform::Serialize(RakNet::BitStream& bitStream) const
 {
-	if (owner == nullptr || owner->GetParentScene() == nullptr) return;
+	/*if (owner == nullptr || owner->GetParentScene() == nullptr) return;
 	if (owner->GetParentScene()->shouldTransformSync) {
 		owner->GetParentScene()->shouldTransformSync = false;
-	}
+	}*/
 
 	bitStream.Write(position.x);
 	bitStream.Write(position.y);
@@ -76,18 +76,9 @@ void Transform::Serialize(RakNet::BitStream& bitStream) const
 
 void Transform::Deserialize(RakNet::BitStream& bitStream)
 {
-	if (NetworkEngine::Instance().IsServer()) {
-		bitStream.Read(position.x);
-		bitStream.Read(position.y);
-		bitStream.Read(rotation);
-		bitStream.Read(scale.x);
-		bitStream.Read(scale.y);
-	}
-	else {
-		bitStream.Read(nextPos.x);
-		bitStream.Read(nextPos.y);
-		bitStream.Read(nextRotation);
-		bitStream.Read(nextScale.x);
-		bitStream.Read(nextScale.y);
-	}
+	bitStream.Read(position.x);
+	bitStream.Read(position.y);
+	bitStream.Read(rotation);
+	bitStream.Read(scale.x);
+	bitStream.Read(scale.y);
 }

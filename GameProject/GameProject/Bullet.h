@@ -16,8 +16,9 @@ public:
     void Initialize() override;
     void Update() override;
     void Load(json::JSON&) override;
-    void SetTarget(Vec2 dir);
-    Vec2 GetTarget() { return direction; }
+    void SetTarget(Vec2 target);
+    void SetDirection(Vec2 dir) { direction = dir; }
+    Vec2 GetDirection() { return direction; }
 
     void SerializeCreate(RakNet::BitStream& bitStream) const override;
     void DeserializeCreate(RakNet::BitStream& bitStream) override;

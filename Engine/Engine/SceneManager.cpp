@@ -121,6 +121,7 @@ void SceneManager::ProcessPacket(RakNet::BitStream& bitStream)
 
 		case NetworkPacketIds::MSG_CREATE_ENTITY:
 		{
+			
 			STRCODE sceneUid = 0;
 			bitStream.Read(sceneUid);
 			for (Scene* scene : loadedScenes)
