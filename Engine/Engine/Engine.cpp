@@ -17,16 +17,10 @@
 
 extern void Engine_Register();
 
-void Engine::Initialize()
+void Engine::Initialize(int _ServerOrClient)
 {
 	Engine_Register();
-
-	int serverClientChoice = -1;
-	std::cout << "Server [0] or Client [1] or Single Player [2]: ";
-	std::cin >> serverClientChoice;
-	if (serverClientChoice != 2) {
-		NetworkEngine::Instance().Initialize((serverClientChoice == 0));
-	}
+	NetworkEngine::Instance().Initialize(_ServerOrClient == 0);
 
 	// Load the managers
 	AudioSystem::Instance().Load("../Assets/AudioSystem.json");

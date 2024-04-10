@@ -44,6 +44,8 @@ private:
     Scene* ownerScene = nullptr;
     Transform transform;
 
+    bool isInitialized = false;
+
     std::list<Component*> components;
     std::list<Component*> componentsToAdd;
     std::list<Component*> componentsToRemove;

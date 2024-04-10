@@ -17,10 +17,13 @@ public:
     void Update() override;
     void Load(json::JSON&) override;
     void SetTarget(Vec2 dir);
+    Vec2 GetTarget() { return direction; }
+
+    void SerializeCreate(RakNet::BitStream& bitStream) const override;
+    void DeserializeCreate(RakNet::BitStream& bitStream) override;
 
 private:
-    float speed = 500.0f;
-    Vec2 start_pos;
+    float speed = 50.0f;
     BoxCollider* collider = nullptr;
     Sprite* sprite = nullptr;
 

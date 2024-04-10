@@ -48,6 +48,7 @@ void Scene::DeserializeCreateEntity(RakNet::BitStream& bitStream)
 	Entity* entity = new Entity();
 	entity->ownerScene = this;
 	entity->DeserializeCreate(bitStream);
+	entity->Initialize();
 	entities.push_back(entity);
 }
 
