@@ -203,6 +203,11 @@ void Scene::PreUpdate()
 
 void Scene::Update()
 {
+	int test;
+	if (entities.size() > 2) {
+		test = 0;
+	}
+
 	for (Entity* entity : entities)
 	{
 		if (entity->IsActive())

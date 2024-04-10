@@ -167,28 +167,25 @@ void Player::SendRPCSpawnBullet(Bullet* bullet)
 	bitStream.Write(bullet->GetOwner()->GetTransform().position.x);
 	bitStream.Write(bullet->GetOwner()->GetTransform().position.y);
 
-	bitStream.Write(bullet->GetDirection().x);
-	bitStream.Write(bullet->GetDirection().y);
+	bitStream.Write(bullet->direction.x);
+	bitStream.Write(bullet->direction.y);
 
 	NetworkEngine::Instance().SendPacket(bitStream);
 }
 
 void Player::RPCSpawnBullet(RakNet::BitStream& bitStream)
 {
-	Entity* entityBullet = owner->GetParentScene()->CreateEntity();
+	Entity* entityBullet = SceneManager::Instance().CreateEntity();
 	Bullet* bullet = (Bullet*)entityBullet->CreateComponent("Bullet");
 
+	// Position
 	Vec2 pos;
 	bitStream.Read(pos.x);
 	bitStream.Read(pos.y);
-
 	entityBullet->GetTransform().position.x = pos.x;
 	entityBullet->GetTransform().position.y = pos.y;
 
-	Vec2 direction;
-	bitStream.Read(direction.x);
-	bitStream.Read(direction.y);
-	bullet->SetDirection(direction);
-
-	float test = RAD_TO_DEG(bullet->GetDirection().Angle());
+	// Direction
+	bitStream.Read(bullet->direction.x);
+	bitStream.Read(bullet->direction.y);
 }

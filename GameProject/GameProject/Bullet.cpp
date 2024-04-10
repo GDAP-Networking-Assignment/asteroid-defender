@@ -20,7 +20,6 @@ void Bullet::Initialize()
     owner->GetTransform().Rotate(RAD_TO_DEG(direction.Angle())+90);
 }
 void Bullet::Update() {
-    // Move the player
     owner->GetTransform().position += direction * (speed * Time::Instance().DeltaTime());
 
     if (collider == nullptr)
@@ -45,8 +44,8 @@ void Bullet::Load(json::JSON& node)
     }
 }
 
-void Bullet::SetTarget(Vec2 dir) {
-    direction = dir - owner->GetTransform().position;
+void Bullet::SetTarget(Vec2 target) {
+    direction = target - owner->GetTransform().position;
     if (direction != Vec2::Zero) {
         direction.Normalize();
     }
