@@ -6,19 +6,19 @@
 #include "NetworkEngine.h"
 #include "Component.h"
 #include "Asteroid.h"
+#include "AsteroidFactory.h"
 #include <cstdlib>
 #include <ctime>
 #include <vector>
-class AsteroidSpawner : public Asteroid {
-	DECLARE_DYNAMIC_DERIVED_CLASS(AsteroidSpawner, Asteroid)
+class AsteroidSpawner : public Component {
+	DECLARE_DYNAMIC_DERIVED_CLASS(AsteroidSpawner, Component)
 public:
     AsteroidSpawner();
     virtual ~AsteroidSpawner() override;
 
     virtual void Initialize() override;
     virtual void Update() override;
-    virtual void Serialize(RakNet::BitStream& bitStream) const override;
-    virtual void Deserialize(RakNet::BitStream& bitStream) override;
+
 
 private:
     void SpawnAsteroid();

@@ -5,22 +5,29 @@
 #include "Transform.h"
 #include "NetworkEngine.h"
 
+
 class Asteroid : public Component {
+
+    DECLARE_ABSTRACT_DERIVED_CLASS(Asteroid, Component);
+
 public:
-    DECLARE_DYNAMIC_DERIVED_CLASS(Asteroid, Component)
-    Asteroid();
-    virtual void Initialize() override;
-    virtual void Update() override;
 
-    // Networking
+
+
+    Asteroid(); // Constructor declaration
+
+    virtual void Initialize() override = 0;
+    virtual void Update() override = 0;
+
     void SerializeProperties(RakNet::BitStream& bs) const;
-    void DeserializeProperties(RakNet::BitStream& bs);
-    int screenWidth;
-    int screenHeight;
 
-private:
+    void DeserializeProperties(RakNet::BitStream& bs);
+
+protected:
     Vec2 velocity;
-    float size; // Example property, adjust as needed
+    float size;
+    int screenWidth, screenHeight;
     BoxCollider* collider = nullptr;
     Sprite* sprite = nullptr;
+    
 };

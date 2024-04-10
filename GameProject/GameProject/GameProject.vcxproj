@@ -184,6 +184,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Asteroid.cpp" />
+    <ClCompile Include="AsteroidBig.cpp" />
+    <ClCompile Include="AsteroidFactory.cpp" />
+    <ClCompile Include="AsteroidSmall.cpp" />
     <ClCompile Include="AsteroidSpawner.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="GameOver.cpp" />
@@ -193,6 +196,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Asteroid.h" />
+    <ClInclude Include="AsteroidBig.h" />
+    <ClInclude Include="AsteroidFactory.h" />
+    <ClInclude Include="AsteroidSmall.h" />
     <ClInclude Include="AsteroidSpawner.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="GameCore.h" />

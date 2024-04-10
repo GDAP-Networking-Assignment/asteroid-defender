@@ -13,8 +13,8 @@ AsteroidSpawner::~AsteroidSpawner() {
 }
 
 void AsteroidSpawner::Initialize() {
-    Component::Initialize();
-    srand(static_cast<unsigned int>(time(nullptr))); // Seed for asteroid spawn position
+    
+    // Seed for asteroid spawn position
   
     //sprite2 = (Sprite*)owner->GetComponent("Sprite");
     
@@ -27,7 +27,7 @@ void AsteroidSpawner::Initialize() {
 }
 
 void AsteroidSpawner::Update() {
-    
+    if (NetworkEngine::Instance().IsClient()) return;
     float deltaTime = Time::Instance().DeltaTime();
     lastSpawnTime += deltaTime;
     if (lastSpawnTime >= spawnRate) {
@@ -37,23 +37,20 @@ void AsteroidSpawner::Update() {
 		lastSpawnTime = 0.0f;
 		
     }
+
     // Additional update logic, such as moving asteroids, could be here
 }
 
 void AsteroidSpawner::SpawnAsteroid() {
     // Create a new asteroid entity at a random x position at the top of the screen
     Entity* asteroidEntity = owner->GetParentScene()->CreateEntity();
-    Asteroid* asteroid = (Asteroid*)asteroidEntity->GetComponent("Asteroid");
+    AsteroidFactory* factory = (AsteroidFactory*)owner->GetParentScene()->CreateEntity()->CreateComponent("AsteroidFactory");
+    AsteroidFactory::AsteroidType type = (rand() % 2 == 0) ? AsteroidFactory::AsteroidType::Big : AsteroidFactory::AsteroidType::Small;
+    Asteroid* asteroid = factory->CreateAsteroid(asteroidEntity,type);
+    asteroid = (Asteroid*)asteroidEntity->CreateComponent("Asteroid");
     asteroidEntity->GetTransform().position = owner->GetTransform().position;
+
   
 
 
-}
-
-void AsteroidSpawner::Serialize(RakNet::BitStream& bitStream) const {
-    // Implement serialization logic for any necessary asteroid state
-}
-
-void AsteroidSpawner::Deserialize(RakNet::BitStream& bitStream) {
-    // Implement deserialization logic for any necessary asteroid state
 }
