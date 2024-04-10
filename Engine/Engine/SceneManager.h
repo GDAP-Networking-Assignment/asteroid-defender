@@ -75,6 +75,11 @@ private:
 	std::map <STRCODE, std::string> stringUIDToFile;
 	friend class Engine;
 	friend class NetworkEngine;
+
+private:
+	bool shouldTransformSync = true;
+	float timerTransformSync = 0.0f;
+	float transformSyncInterval = 1.0f;
 };
 
 #endif // !_SCENE_MANAGER_H_

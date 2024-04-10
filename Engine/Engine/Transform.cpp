@@ -7,8 +7,10 @@ IMPLEMENT_DYNAMIC_CLASS(Transform);
 
 void Transform::Update()
 {
+	position += velocity * Time::Instance().DeltaTime();
+
 	if (owner != nullptr && owner->GetParentScene() != nullptr) {
-		PredictTransform(owner->GetParentScene()->timerTransformSync);
+		//PredictTransform(owner->GetParentScene()->timerTransformSync);
 	}
 }
 
@@ -50,7 +52,7 @@ void Transform::Scale(const Vec2& delta)
 	scale *= delta;
 }
 
-void Transform::PredictTransform(float _time)
+void Transform::DeserializePredict(RakNet::BitStream& bitStream, float _time)
 {
 	Vec2 nextPos;
 	int nextRotation = 0;

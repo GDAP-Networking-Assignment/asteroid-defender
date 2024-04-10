@@ -23,10 +23,6 @@ public:
 	bool RemoveEntity(std::string entityGuid);
 	bool RemoveEntity(STRCODE entityId);
 
-	bool shouldTransformSync = true;
-	float timerTransformSync = 0.0f;
-	float transformSyncInterval = 1.0f;
-
 protected:
 
 	void Serialize(RakNet::BitStream& bitStream) const override;
@@ -45,9 +41,10 @@ protected:
 	void Update();
 	void PostUpdate();
 
-	void UpdateTransformSync();
-
 	void InvokeRPC(RakNet::BitStream& bitStream);
+
+	void SerializeTransforms(RakNet::BitStream& bitStream);
+	void DeserializeSyncTransforms(RakNet::BitStream& bitStream, float timestamp);
 
 private:
 	// Only enabled scenes get updated & rendered

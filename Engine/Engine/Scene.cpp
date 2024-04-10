@@ -114,6 +114,33 @@ void Scene::DeserializeSnapshot(RakNet::BitStream& bitStream)
 	}
 }
 
+void Scene::SerializeTransforms(RakNet::BitStream& bitStream)
+{
+	bitStream.Write((unsigned int)entities.size());
+	for (Entity* entity : entities)
+	{
+		bitStream.Write(entity->uid);
+		entity->GetTransform().Serialize(bitStream);
+	}
+}
+
+void Scene::DeserializeSyncTransforms(RakNet::BitStream& bitStream, float timestamp)
+{
+	unsigned int entityCount = 0;
+	bitStream.Read(entityCount);
+
+	for (int i = 0; i < entityCount; i++)
+	{
+		STRCODE entityUid;
+		bitStream.Read(entityUid);
+
+		Entity* foundEntity = FindEntity(entityUid);
+		if (foundEntity != nullptr) {
+			foundEntity->GetTransform().DeserializePredict(bitStream, timestamp);
+		}
+	}
+}
+
 void Scene::Initialize()
 {
 	for (Entity* entity : entities)
@@ -233,17 +260,6 @@ void Scene::PostUpdate()
 		{
 			entity->PostUpdate();
 		}
-	}
-}
-
-void Scene::UpdateTransformSync()
-{
-	if (!shouldTransformSync) {
-		timerTransformSync += Time::Instance().DeltaTime();
-	}
-	if (timerTransformSync > transformSyncInterval) {
-		shouldTransformSync = true;
-		LOG("SYNCING");
 	}
 }
 
