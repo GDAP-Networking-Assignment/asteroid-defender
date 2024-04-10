@@ -44,10 +44,6 @@ void AsteroidSpawner::Update() {
 void AsteroidSpawner::SpawnAsteroid() {
     // Create a new asteroid entity at a random x position at the top of the screen
     Entity* asteroidEntity = owner->GetParentScene()->CreateEntity();
-    AsteroidFactory* factory = (AsteroidFactory*)owner->GetParentScene()->CreateEntity()->CreateComponent("AsteroidFactory");
-    AsteroidFactory::AsteroidType type = (rand() % 2 == 0) ? AsteroidFactory::AsteroidType::Big : AsteroidFactory::AsteroidType::Small;
-    Asteroid* asteroid = factory->CreateAsteroid(asteroidEntity,type);
-    asteroid = (Asteroid*)asteroidEntity->CreateComponent("Asteroid");
     asteroidEntity->GetTransform().position = owner->GetTransform().position;
 
   

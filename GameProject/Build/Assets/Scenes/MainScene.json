@@ -39,7 +39,13 @@
           {
             "ClassName": "AsteroidFactory",
             "ClassData": {
-              "GUID": "145111c4-b018-465e-82fe-c23937b9428a"
+              "GUID": "d0bcbb92-bd93-407b-815b-ac91204e6622"
+            }
+          },
+          {
+            "ClassName": "AsteroidBig",
+            "ClassData": {
+              "GUID": "bc2e55fd-d5fd-4e4a-804b-75f6967e11c8"
             }
           }
         ]
