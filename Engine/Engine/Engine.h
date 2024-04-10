@@ -10,7 +10,7 @@ class Engine
 	DECLARE_SINGLETON(Engine)
 
 public:
-	void Initialize();
+	void Initialize(int _ServerOrClient);
 	void Destroy();
 	void GameLoop();
 

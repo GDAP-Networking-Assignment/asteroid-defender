@@ -14,8 +14,8 @@ void Player::Initialize()
 {
 	Component::Initialize();
 	collider = (BoxCollider*)owner->GetComponent("BoxCollider");
-
-	RegisterRPC(GetHashCode("RPC"), std::bind(&Player::RPC, this, std::placeholders::_1));
+	RegisterRPC(GetHashCode("RPC"), std::bind(&Player::RPCMove, this, std::placeholders::_1));
+	RegisterRPC(GetHashCode("RPCSpawnBullet"), std::bind(&Player::RPCSpawnBullet, this, std::placeholders::_1));
 }
 
 void Player::Update() 
@@ -24,7 +24,7 @@ void Player::Update()
 		HandleInput();
 		HandleFire();
 		if (movement != Vec2::Zero) {
-			SendRPC();
+			//SendRPC();
 		}
 		return;
 	}
@@ -38,7 +38,7 @@ void Player::Update()
 
 		if (collider == nullptr)
 		{
-			LOG("no collider uwu");
+			LOG("No collider");
 			return;
 		}
 		for (const auto& other : collider->OnCollisionEnter())
@@ -138,10 +138,21 @@ void Player::HandleFire() {
 		Bullet* bullet = (Bullet*)newBullet->CreateComponent("Bullet");
 		newBullet->GetTransform().position = owner->GetTransform().position;
 		bullet->SetTarget(mousePos);
+
+		SendRPCSpawnBullet(bullet);
 	}
 }
 
-void Player::SendRPC()
+void Player::RPCMove(RakNet::BitStream& bitStream)
+{
+	float value = 0.0f;
+	bitStream.Read(value);
+	movement.x += value;
+	bitStream.Read(value);
+	movement.y += value;
+}
+
+void Player::SendRPCSpawnBullet(Bullet* bullet)
 {
 	RakNet::BitStream bitStream;
 
@@ -151,19 +162,30 @@ void Player::SendRPC()
 	bitStream.Write(owner->GetParentScene()->GetUid());
 	bitStream.Write(owner->GetUid());
 	bitStream.Write(GetUid());
-	bitStream.Write(GetHashCode("RPC"));
+	bitStream.Write(GetHashCode("RPCSpawnBullet"));
 
-	bitStream.Write(movement.x);
-	bitStream.Write(movement.y);
+	bitStream.Write(bullet->GetOwner()->GetTransform().position.x);
+	bitStream.Write(bullet->GetOwner()->GetTransform().position.y);
+
+	bitStream.Write(bullet->direction.x);
+	bitStream.Write(bullet->direction.y);
 
 	NetworkEngine::Instance().SendPacket(bitStream);
 }
 
-void Player::RPC(RakNet::BitStream& bitStream)
+void Player::RPCSpawnBullet(RakNet::BitStream& bitStream)
 {
-	float value = 0.0f;
-	bitStream.Read(value);
-	movement.x += value;
-	bitStream.Read(value);
-	movement.y += value;
+	Entity* entityBullet = SceneManager::Instance().CreateEntity();
+	Bullet* bullet = (Bullet*)entityBullet->CreateComponent("Bullet");
+
+	// Position
+	Vec2 pos;
+	bitStream.Read(pos.x);
+	bitStream.Read(pos.y);
+	entityBullet->GetTransform().position.x = pos.x;
+	entityBullet->GetTransform().position.y = pos.y;
+
+	// Direction
+	bitStream.Read(bullet->direction.x);
+	bitStream.Read(bullet->direction.y);
 }

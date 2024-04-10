@@ -24,13 +24,34 @@
     "IsEnabled": true,
     "Entities": [
       {
+        "Name": "AsteroidSpawner",
+        "GUID": "e6fc8f24-8859-4ad2-b3f9-09bca34ffc83",
+        "Transform": {
+          "GUID": "0efa149a-c7dc-4c27-8c8d-8e4ef3a65db0"
+        },
+        "Components": [
+          {
+            "ClassName": "AsteroidSpawner",
+            "ClassData": {
+              "GUID": "11880b4d-720a-4386-aba3-851d3c76540b"
+            }
+          },
+          {
+            "ClassName": "AsteroidFactory",
+            "ClassData": {
+              "GUID": "145111c4-b018-465e-82fe-c23937b9428a"
+            }
+          }
+        ]
+      },
+      {
         "Name": "Player",
         "GUID": "1cc2cb0e-085b-43cf-9bfe-c47b5158b2bf",
         "Transform": {
           "GUID": "77919e8a-8f63-4e8a-886f-b038bbdc5e77",
           "Position": [
-            100,
-            200
+            640,
+            700
           ],
           "Rotation": 0,
           "Scale": [
@@ -60,28 +81,6 @@
               "DeathScene": "45f479c9-f110-43c5-be35-9fbbc5d7d694"
             }
           }
-        ]
-      },
-      {
-        "Name": "AsteroidSpawner",
-        "GUID": "e6fc8f24-8859-4ad2-b3f9-09bca34ffc83",
-        "Transform": {
-          "GUID": "0efa149a-c7dc-4c27-8c8d-8e4ef3a65db0"
-        },
-        "Components": [
-          {
-            "ClassName": "AsteroidSpawner",
-            "ClassData": {
-              "GUID": "11880b4d-720a-4386-aba3-851d3c76540b"
-            }
-          },
-          {
-            "ClassName": "AsteroidFactory",
-            "ClassData": {
-              "GUID": "145111c4-b018-465e-82fe-c23937b9428a"
-            }
-          }
-          
         ]
       }
     ]

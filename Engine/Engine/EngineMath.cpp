@@ -144,6 +144,11 @@ float Vec2::Dot(const Vec2& rhs) const
 	return this->x * rhs.x + this->y * rhs.y;
 }
 
+float Vec2::Angle() {
+	float angleRad = atan2(this->y, this->x);
+	return angleRad;
+}
+
 float Vec2::Dot(const Vec2& lhs, const Vec2& rhs) 
 {
 	return lhs.x * rhs.x + lhs.y * rhs.y;

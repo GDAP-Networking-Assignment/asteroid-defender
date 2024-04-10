@@ -38,7 +38,6 @@ void Scene::SerializeCreateEntity(Entity* entity, RakNet::BitStream& bitStream) 
 {
 	// Write the Scene id (looked up by the manager)
 	bitStream.Write(uid);
-
 	// Entity will write the id and other associated data
 	entity->SerializeCreate(bitStream);
 }
@@ -48,6 +47,7 @@ void Scene::DeserializeCreateEntity(RakNet::BitStream& bitStream)
 	Entity* entity = new Entity();
 	entity->ownerScene = this;
 	entity->DeserializeCreate(bitStream);
+	entity->Initialize();
 	entities.push_back(entity);
 }
 
@@ -186,6 +186,7 @@ void Scene::PreUpdate()
 			bitStream.Write((unsigned char)NetworkPacketIds::MSG_SCENE_MANAGER);
 			bitStream.Write((unsigned char)NetworkPacketIds::MSG_CREATE_ENTITY);
 			SerializeCreateEntity(entity, bitStream);
+
 			NetworkEngine::Instance().SendPacket(bitStream);
 		}
 	}
@@ -202,6 +203,11 @@ void Scene::PreUpdate()
 
 void Scene::Update()
 {
+	int test;
+	if (entities.size() > 2) {
+		test = 0;
+	}
+
 	for (Entity* entity : entities)
 	{
 		if (entity->IsActive())

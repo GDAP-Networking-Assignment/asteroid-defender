@@ -16,16 +16,19 @@ public:
     void Initialize() override;
     void Update() override;
     void Load(json::JSON&) override;
-    void SetTarget(Vec2 dir);
+    void SetTarget(Vec2 target);
+
+    void SerializeCreate(RakNet::BitStream& bitStream) const override;
+    void DeserializeCreate(RakNet::BitStream& bitStream) override;
 
 private:
-    float speed = 500.0f;
-    Vec2 start_pos;
     BoxCollider* collider = nullptr;
     Sprite* sprite = nullptr;
 
     STRCODE game_over_scene = -1;
 
+public:
+    float speed = 50.0f;
     Vec2 direction;
 };
 

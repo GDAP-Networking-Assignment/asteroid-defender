@@ -14,6 +14,7 @@ void Entity::Initialize()
 	{
 		component->Initialize();
 	}
+	isInitialized = true;
 }
 
 void Entity::Serialize(RakNet::BitStream& bitStream) const
@@ -61,8 +62,11 @@ void Entity::SerializeCreate(RakNet::BitStream& bitStream) const
 	// Write the entity id
 	bitStream.Write(uid);
 
+	transform.Serialize(bitStream);
+
 	// Write the total number of components
 	bitStream.Write((unsigned int)components.size());
+
 	for (const auto component : components)
 	{
 		bitStream.Write(component->uid);
@@ -72,11 +76,21 @@ void Entity::SerializeCreate(RakNet::BitStream& bitStream) const
 
 		component->SerializeCreate(bitStream);
 	}
+
+	// Write the total number of components to add
+	//bitStream.Write((unsigned int)componentsToAdd.size());
+	//for (const auto component : componentsToAdd)
+	//{
+	//	bitStream.Write(component->uid);
+	//	bitStream.Write(component->GetDerivedClassHashCode());
+	//	component->SerializeCreate(bitStream);
+	//}
 }
 
 void Entity::DeserializeCreate(RakNet::BitStream& bitStream)
 {
 	bitStream.Read(uid);
+	transform.Deserialize(bitStream);
 
 	unsigned int numComponents = 0;
 	bitStream.Read(numComponents);
@@ -109,6 +123,23 @@ void Entity::DeserializeCreate(RakNet::BitStream& bitStream)
 			components.push_back(component);
 		}
 	}
+
+	// Deserialize components to add
+	//bitStream.Read(numComponents);
+	//for (int i = 0; i < numComponents; i++)
+	//{
+	//	unsigned int componentId = 0;
+	//	bitStream.Read(componentId);
+
+	//	STRCODE componentHash;
+	//	bitStream.Read(componentHash);
+
+	//	Component* component = (Component*)TypeClass::ConstructObject(componentHash);
+	//	component->owner = this;
+	//	component->DeserializeCreate(bitStream);
+	//	//component->Initialize();
+	//	componentsToAdd.push_back(component);
+	//}
 }
 
 void Entity::SerializeCreateComponent(Component* component, RakNet::BitStream& bitStream) const

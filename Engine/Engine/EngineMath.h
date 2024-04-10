@@ -57,12 +57,13 @@ union Vec2
     float MagnitudeSquared() const;
     void Normalize();
     float Dot(const Vec2 &rhs) const;
+    float Angle();
     static float Dot(const Vec2 &lhs, const Vec2 &rhs);
 
     // Only because Roy asked me to :(
     float Distance(const Vec2 &rhs) const;
-    static float Distance(const Vec2 &lhs, const Vec2 &rhs);
 
+    static float Distance(const Vec2 &lhs, const Vec2 &rhs);
     static Vec2 Lerp(const Vec2& lhs, const Vec2& rhs, float t);
 };
 

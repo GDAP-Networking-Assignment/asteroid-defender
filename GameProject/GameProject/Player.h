@@ -5,6 +5,7 @@
 #include "GameCore.h"
 
 class BoxCollider;
+class Bullet;
 
 class Player : public Component
 {
@@ -28,8 +29,10 @@ private:
     void HandleInput();
     void HandleFire();
 
-    void SendRPC();
-    void RPC(RakNet::BitStream& bitStream);
+    void RPCMove(RakNet::BitStream& bitStream);
+
+    void SendRPCSpawnBullet(Bullet* bullet);
+    void RPCSpawnBullet(RakNet::BitStream& bitStream);
 
 private:
     Vec2 movement;
