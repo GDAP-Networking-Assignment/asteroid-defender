@@ -33,6 +33,13 @@ void Bullet::Update() {
             continue;
         }
         owner->GetParentScene()->RemoveEntity(uid);
+        if (other->GetOwner()->GetName().find("Asteroid") != std::string::npos) {
+            // Collision with asteroid detected
+            // Perform collision resolution, typically removing both entities
+            owner->GetParentScene()->RemoveEntity(owner->GetUid()); // Remove bullet
+            owner->GetParentScene()->RemoveEntity(other->GetOwner()->GetUid()); // Remove asteroid
+            break; // Since bullet is destroyed, no need to check for more collisions
+        }
     }
 }
 void Bullet::Load(json::JSON& node)

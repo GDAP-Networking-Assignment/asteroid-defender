@@ -25,6 +25,7 @@ private:
     float spawnRate; // Seconds between spawns
     float lastSpawnTime; // Timestamp of the last spawn
     Sprite* sprite = nullptr;
-    Sprite* sprite2 = nullptr;
+    BoxCollider* collider = nullptr;
+    
 
 };

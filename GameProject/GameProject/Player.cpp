@@ -16,6 +16,10 @@ void Player::Initialize()
 	collider = (BoxCollider*)owner->GetComponent("BoxCollider");
 	RegisterRPC(GetHashCode("RPC"), std::bind(&Player::RPCMove, this, std::placeholders::_1));
 	RegisterRPC(GetHashCode("RPCSpawnBullet"), std::bind(&Player::RPCSpawnBullet, this, std::placeholders::_1));
+
+
+
+
 }
 
 void Player::Update() 

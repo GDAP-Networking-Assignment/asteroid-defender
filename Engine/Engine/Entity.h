@@ -23,7 +23,7 @@ public:
     Component* GetComponentByUiD(STRCODE uid);
     Transform& GetTransform() { return transform; }
     Scene* GetParentScene() const { return ownerScene; }
-
+    Scene* ownerScene = nullptr;
 protected:
     void Serialize(RakNet::BitStream& bitStream) const override;
     void Deserialize(RakNet::BitStream& bitStream) override;
@@ -41,7 +41,7 @@ protected:
     void PostUpdate();
 
 private:
-    Scene* ownerScene = nullptr;
+  
     Transform transform;
 
     bool isInitialized = false;

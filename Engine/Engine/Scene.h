@@ -22,7 +22,7 @@ public:
 	std::list<Entity*> FindEntityWithComponent(std::string componentClassName);
 	bool RemoveEntity(std::string entityGuid);
 	bool RemoveEntity(STRCODE entityId);
-
+	void MarkEntityForRemoval(STRCODE entityId);
 	bool shouldTransformSync = true;
 	float timerTransformSync = 0.0f;
 	float transformSyncInterval = 1.0f;

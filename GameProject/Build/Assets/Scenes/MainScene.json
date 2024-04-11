@@ -53,6 +53,12 @@
             "ClassData": {
               "GUID": "6b2ae6a6-977a-4185-a018-d5a0ae96ac74"
             }
+          },
+          {
+            "ClassName": "BoxCollider",
+            "ClassData": {
+              "GUID": "65fd6813-f8f0-45c8-bb31-fde9c0457f77"
+            }
           }
         ]
       },

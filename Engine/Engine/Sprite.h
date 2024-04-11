@@ -17,7 +17,7 @@ public:
 	void SetTextureAsset(TextureAsset* texAsset);
 
 	inline SDL_Rect& GetTargetRect() { return targetRect; }
-
+	IVec2 size = { 0, 0 };
 	void SerializeCreate(RakNet::BitStream& bitStream) const override;
 	void DeserializeCreate(RakNet::BitStream& bitStream) override;
 
@@ -30,7 +30,7 @@ protected:
 protected:
 	SDL_Rect targetRect = { 0,0,0,0 };
 	TextureAsset* texture = nullptr;
-	IVec2 size = { 0, 0 };
+	
 	SDL_Rect sourceRect = { 0,0,0,0 };
 };
 

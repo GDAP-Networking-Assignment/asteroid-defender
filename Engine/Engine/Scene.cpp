@@ -280,6 +280,15 @@ void Scene::Destroy()
 	}
 }
 
+void Scene::MarkEntityForRemoval(STRCODE entityId) {
+	for (auto& entity : entities) {
+		if (entity->GetUid() == entityId) {
+			entitiesToDestroy.push_back(entity);
+			break;
+		}
+	}
+}
+
 Entity* Scene::CreateEntity()
 {
 	Entity* entity = new Entity();
