@@ -8,7 +8,7 @@ class Transform : public Component
     DECLARE_DYNAMIC_DERIVED_CLASS(Transform, Component)
 
 public:
-    void Update();
+    void Update() override;
 
 public:
     Transform();
