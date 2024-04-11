@@ -15,4 +15,11 @@ void AsteroidSmall::Initialize() {
 void AsteroidSmall::Update() {
     // Update logic specific to SmallAsteroid
     Asteroid::Update();
+    Transform& transform = owner->GetTransform();
+    transform.position += velocity * Time::Instance().DeltaTime();
+
+    if (transform.position.y > screenHeight) {
+        transform.position.y = -size;
+        transform.position.x = static_cast<float>(rand() % screenWidth);
+    }
 }

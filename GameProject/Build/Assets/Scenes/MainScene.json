@@ -47,6 +47,12 @@
             "ClassData": {
               "GUID": "bc2e55fd-d5fd-4e4a-804b-75f6967e11c8"
             }
+          },
+          {
+            "ClassName": "AsteroidSmall",
+            "ClassData": {
+              "GUID": "6b2ae6a6-977a-4185-a018-d5a0ae96ac74"
+            }
           }
         ]
       },

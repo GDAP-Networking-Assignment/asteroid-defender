@@ -14,16 +14,11 @@ AsteroidSpawner::~AsteroidSpawner() {
 
 void AsteroidSpawner::Initialize() {
     
-    // Seed for asteroid spawn position
-  
-    //sprite2 = (Sprite*)owner->GetComponent("Sprite");
-    
-   
-   
-    /*sprite2->SetTextureAsset(
 
-        (TextureAsset*)AssetManager::Instance().GetAsset("MeteorSmall_48526c0d-ca5d-4681-8fe5-93726d5906fa")
-    );*/
+	
+	Transform& transform = owner->GetTransform();
+	transform.position.x = rand() % 800;
+	transform.position.y = -1;
 }
 
 void AsteroidSpawner::Update() {
@@ -42,11 +37,25 @@ void AsteroidSpawner::Update() {
 }
 
 void AsteroidSpawner::SpawnAsteroid() {
-    // Create a new asteroid entity at a random x position at the top of the screen
-    Entity* asteroidEntity = owner->GetParentScene()->CreateEntity();
-    asteroidEntity->GetTransform().position = owner->GetTransform().position;
+ 
+	AsteroidFactory* factory = (AsteroidFactory*)owner->CreateComponent("AsteroidFactory");
+	AsteroidFactory::AsteroidType type = (rand() % 2 == 0) ? AsteroidFactory::AsteroidType::Big : AsteroidFactory::AsteroidType::Small;
+	Asteroid* asteroid = factory->CreateAsteroid(owner, type);
+	if (type == AsteroidFactory::AsteroidType::Big) {
+		owner->SetName("Asteroid");
+		sprite = (Sprite*)owner->CreateComponent("Sprite");
+		sprite->SetTextureAsset(
 
-  
+			(TextureAsset*)AssetManager::Instance().GetAsset("MeteorSmall_48526c0d-ca5d-4681-8fe5-93726d5906fa")
+		);
+	}
+	else if (type == AsteroidFactory::AsteroidType::Small) {
+		sprite = (Sprite*)owner->CreateComponent("Sprite");
+		sprite->SetTextureAsset(
 
+			(TextureAsset*)AssetManager::Instance().GetAsset("MeteorBig_a7319cea-2d19-4515-b910-7d10f6df0ec3")
+
+		);
+	}
 
 }

@@ -23,5 +23,12 @@ void AsteroidBig::Initialize()
 void AsteroidBig::Update()
 {
 	// Update logic specific to BigAsteroid
-	Asteroid::Update();
+	
+	Transform& transform = owner->GetTransform();
+	transform.position += velocity * Time::Instance().DeltaTime();
+
+	if (transform.position.y > screenHeight) {
+		transform.position.y = -size;
+		transform.position.x = static_cast<float>(rand() % screenWidth);
+	}
 }
