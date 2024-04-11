@@ -14,7 +14,7 @@ void AsteroidSmall::Initialize() {
 
 void AsteroidSmall::Update() {
     // Update logic specific to SmallAsteroid
-    Asteroid::Update();
+   
     Transform& transform = owner->GetTransform();
     transform.position += velocity * Time::Instance().DeltaTime();
 
