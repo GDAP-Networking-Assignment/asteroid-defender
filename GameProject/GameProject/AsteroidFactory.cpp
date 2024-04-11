@@ -4,4 +4,5 @@
 IMPLEMENT_DYNAMIC_CLASS(AsteroidFactory)
 AsteroidFactory::AsteroidFactory()
 {
+
 }
