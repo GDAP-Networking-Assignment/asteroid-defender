@@ -29,36 +29,37 @@ void AsteroidSpawner::Update() {
 }
 
 void AsteroidSpawner::SpawnAsteroid() {
- 
-	AsteroidFactory* factory = (AsteroidFactory*)owner->CreateComponent("AsteroidFactory");
-	AsteroidFactory::AsteroidType type = (rand() % 2 == 0) ? AsteroidFactory::AsteroidType::Big : AsteroidFactory::AsteroidType::Small;
-	Asteroid* asteroid = factory->CreateAsteroid(owner, type);
+    // Decide on the type of the asteroid to spawn.
+    AsteroidFactory::AsteroidType type = (rand() % 2 == 0) ? AsteroidFactory::AsteroidType::Big : AsteroidFactory::AsteroidType::Small;
 
-	
+    // Create a new asteroid entity in the scene.
+    Entity* newAsteroid = owner->GetParentScene()->CreateEntity();
 
-	if (type == AsteroidFactory::AsteroidType::Small) {
-		owner->SetName("AsteroidSmall");
-		Entity* newAsteroid = owner->GetParentScene()->CreateEntity();
-		AsteroidSmall* smallAsteroid = (AsteroidSmall*)newAsteroid->CreateComponent("AsteroidSmall");
-		Transform& transform = owner->GetTransform();
-		transform.position.x = static_cast<float>(rand() % 800);
-		newAsteroid->GetTransform().position = transform.position;
-		sprite = (Sprite*)owner->CreateComponent("Sprite");
-		sprite->SetTextureAsset(
-			(TextureAsset*)AssetManager::Instance().GetAsset("MeteorSmall_48526c0d-ca5d-4681-8fe5-93726d5906fa")
-		);
-	}
-	else if (type == AsteroidFactory::AsteroidType::Big) {
-		owner->SetName("AsteroidBig");
-		Entity* newAsteroid = owner->GetParentScene()->CreateEntity();
-		AsteroidBig* bigAsteroid = (AsteroidBig*)newAsteroid->CreateComponent("AsteroidBig");
-		Transform& transform = owner->GetTransform();
-		transform.position.x = static_cast<float>(rand() % 800);
-		newAsteroid->GetTransform().position = transform.position;
-		sprite = (Sprite*)owner->CreateComponent("Sprite");
-		sprite->SetTextureAsset(
-			(TextureAsset*)AssetManager::Instance().GetAsset("MeteorBig_a7319cea-2d19-4515-b910-7d10f6df0ec3")
-		);
-	}
+    // Set the name based on the type.
+    newAsteroid->SetName(type == AsteroidFactory::AsteroidType::Small ? "AsteroidSmall" : "AsteroidBig");
+
+    // Create an AsteroidFactory component on the new asteroid entity, not on the owner of the spawner.
+    AsteroidFactory* factory = (AsteroidFactory*)newAsteroid->CreateComponent("AsteroidFactory");
+
+    // Use the factory to create the appropriate type of asteroid on the new entity.
+    Asteroid* asteroid = factory->CreateAsteroid(newAsteroid, type);
+
+    // Initialize the new asteroid's transform and other components as needed.
+    Transform& transform = newAsteroid->GetTransform();
+    transform.position.x = static_cast<float>(rand() % 1280);
+    transform.position.y = static_cast<float>(rand() % 720);
+
+    // Set up the sprite for the asteroid based on its type.
+    Sprite* sprite = (Sprite*)newAsteroid->CreateComponent("Sprite");
+    if (type == AsteroidFactory::AsteroidType::Small) {
+        sprite->SetTextureAsset(
+            (TextureAsset*)AssetManager::Instance().GetAsset("MeteorSmall_48526c0d-ca5d-4681-8fe5-93726d5906fa")
+        );
+    }
+    else {
+        sprite->SetTextureAsset(
+            (TextureAsset*)AssetManager::Instance().GetAsset("MeteorBig_a7319cea-2d19-4515-b910-7d10f6df0ec3")
+        );
+    }
 
 }

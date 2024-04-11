@@ -21,13 +21,13 @@ public:
 
         switch (type) {
         case AsteroidType::Big:
-           parent->GetComponent("AsteroidBig");
+           parent->CreateComponent("AsteroidBig");
            
            big->Initialize();
 
             return big;
         case AsteroidType::Small:
-            parent->GetComponent("AsteroidSmall");
+            parent->CreateComponent("AsteroidSmall");
 			
             snails->Initialize();
 			return snails;

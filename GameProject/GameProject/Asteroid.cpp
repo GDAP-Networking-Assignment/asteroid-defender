@@ -16,7 +16,6 @@ void Asteroid::Initialize() {
 
 	//collider = (BoxCollider*)owner->CreateComponent("BoxCollider");
 
-	
 
 	size = 10; // Adjust the size of the asteroid as needed
 
