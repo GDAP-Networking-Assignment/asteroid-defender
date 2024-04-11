@@ -5,7 +5,7 @@
 
  IMPLEMENT_ABSTRACT_CLASS(Asteroid)
 
-Asteroid::Asteroid() : velocity(0.0f, 250.0f), size(1.0f), screenWidth(800), screenHeight(600) {
+Asteroid::Asteroid() : velocity(0.0f, 50.0f), size(1.0f), screenWidth(800), screenHeight(600) {
 	 screenWidth = RenderSystem::Instance().GetWindowSize().x;
 	 screenHeight = RenderSystem::Instance().GetWindowSize().y;
 

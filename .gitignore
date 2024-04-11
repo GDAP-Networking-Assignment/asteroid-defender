@@ -4,7 +4,7 @@ Engine/Engine-Libs/
 Engine/Intermediate/
 GameProject/Intermediate/
 GameProject/Build/bin/*
-
+GameProject/Build/Batch/
 # User-specific files
 */*/*.vcxproj.user
 
