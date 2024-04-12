@@ -51,6 +51,10 @@ private:
     std::list<Component*> componentsToRemove;
 
     friend class Scene;
+
+public:
+    // Used to check duplicate creation with RPC
+    STRCODE networkUid = -1;
 };
 
 #endif // !_ENTITY_H_

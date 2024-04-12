@@ -1,7 +1,14 @@
 #pragma once
 
 #include "Component.h"
-#include "EngineMath.h"  
+#include "EngineMath.h"
+
+struct TransformData {
+    Vec2 position;
+    float rotation = 0;
+    Vec2 scale;
+    Vec2 velocity;
+};
 
 class Transform : public Component 
 {
@@ -20,19 +27,20 @@ public:
 
     void Translate(const Vec2& delta);
     void Rotate(float delta);
+    void RotateToVelocity(float deltaOffset = 0);
     void Scale(const Vec2& delta);
-    void PredictTransform(float _time);
+    void DeserializePredict(RakNet::BitStream& bitStream);
 
 public:
     Vec2 position; ///< The position of the entity in the game world.
     float rotation; ///< The rotation of the entity, in degrees or radians.
     Vec2 scale; ///< The scale of the entity.
+    Vec2 velocity;
 
-
-    // Future positions;
-    Vec2 nextPos;
-    int nextRotation = 0;
-    Vec2 nextScale;
-
-    const float interpolationTime = 0.5f;
+private:
+    bool runInterpolate = false;
+    TransformData lastTransform;
+    TransformData interpolationTarget;
+    float interpolationTimer = 0.0f;
+    const float interpolationDuration = 0.2f;
 };

@@ -1,6 +1,7 @@
 #include "EngineCore.h"
 #include "NetworkEngine.h"
 #include "SceneManager.h"
+#include <random>
 
 void NetworkEngine::SendPacket(RakNet::BitStream& bs)
 {
@@ -84,6 +85,15 @@ void NetworkEngine::ReceivePackets()
 
 	RakNet::Packet* packet = rakInterface->Receive();
 	while (packet != nullptr) {
+		// Introduce random server delay
+		if (IsServer()) {
+			std::random_device rd;
+			std::mt19937 gen(rd());
+			std::uniform_int_distribution<> delayDist(0, 500); // Adjust the range as needed
+			int delayMilliseconds = delayDist(gen);
+			std::this_thread::sleep_for(std::chrono::milliseconds(delayMilliseconds));
+		}
+
 		RakNet::BitStream bs(packet->data, packet->length, false);
 		bs.Read(packetId);
 
@@ -136,7 +146,6 @@ void NetworkEngine::ReceivePackets()
 
 void NetworkEngine::PostUpdate()
 {
-	if (!isServer) return;
-
-	//SceneManager::Instance().NetworkUpdate();
+	if (isClient) return;
+	SceneManager::Instance().NetworkUpdate();
 }

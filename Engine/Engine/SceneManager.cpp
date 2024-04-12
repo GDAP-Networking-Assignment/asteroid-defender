@@ -12,7 +12,7 @@ void SceneManager::Load()
 
 	// Store mapping of scene id to scene path location
 	// SceneManager must know about every scene in existance
-	THROW_RUNTIME_ERROR(!sceneManagerJSON.hasKey("AllScenes"), "Scene Manager must have GIUD & path data of all available scenes.");
+	THROW_RUNTIME_ERROR(!sceneManagerJSON.hasKey("AllScenes"), "Scene Manager must have GUID & path data of all available scenes.");
 	json::JSON allScenes = sceneManagerJSON["AllScenes"];
 	for (json::JSON& sceneInfo : allScenes.ArrayRange())
 	{
@@ -74,15 +74,17 @@ void SceneManager::Initialize()
 
 void SceneManager::NetworkUpdate()
 {
-	for (Scene* scene : loadedScenes)
-	{
+	timerTransformSync += Time::Instance().DeltaTime();
+	if (timerTransformSync > transformSyncInterval) {
+		timerTransformSync = 0;
 		RakNet::BitStream bs;
 		bs.Write((unsigned char)NetworkPacketIds::MSG_SCENE_MANAGER);
-		bs.Write((unsigned char)NetworkPacketIds::MSG_SCENE_UPDATE);
-		bs.Write(scene->uid);
-		scene->Serialize(bs);
-
+		bs.Write((unsigned char)NetworkPacketIds::MSG_SYNC);
+		bs.Write(Time::Instance().TotalTime());
+		bs.Write(SceneManager::Instance().activeSceneId);
+		SceneManager::Instance().activeScene->SerializeTransforms(bs);
 		NetworkEngine::Instance().SendPacket(bs);
+		LOG("Sending Sync");
 	}
 }
 
@@ -150,7 +152,6 @@ void SceneManager::ProcessPacket(RakNet::BitStream& bitStream)
 		}
 		break;
 
-
 		case MSG_SNAPSHOT:
 		{
 			STRCODE sceneUid = 0;
@@ -177,6 +178,20 @@ void SceneManager::ProcessPacket(RakNet::BitStream& bitStream)
 				}
 			}
 		}
+		break;
+
+		case MSG_SYNC:
+			Time::Instance().lastServerTick = Time::Instance().currentServerTick;
+			bitStream.Read(Time::Instance().currentServerTick);
+			STRCODE sceneUid = 0;
+			bitStream.Read(sceneUid);
+			for (Scene* scene : loadedScenes) {
+				if (scene->uid == sceneUid) {
+					scene->DeserializeSyncTransforms(bitStream);
+				}
+			}
+			break;
+
 		break;
 	}
 }

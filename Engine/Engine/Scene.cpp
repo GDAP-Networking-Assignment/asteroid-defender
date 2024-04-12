@@ -38,12 +38,23 @@ void Scene::SerializeCreateEntity(Entity* entity, RakNet::BitStream& bitStream) 
 {
 	// Write the Scene id (looked up by the manager)
 	bitStream.Write(uid);
+	// Write client entity source id
+	bitStream.Write(entity->networkUid);
 	// Entity will write the id and other associated data
 	entity->SerializeCreate(bitStream);
 }
 
 void Scene::DeserializeCreateEntity(RakNet::BitStream& bitStream)
 {
+	// Check if entity already exists. If so, don't create and just match Uid with server
+	STRCODE sourceEntityUid = 0;
+	bitStream.Read(sourceEntityUid);
+	Entity* sourceEntity = FindEntity(sourceEntityUid);
+	if ( sourceEntity != nullptr) {
+		bitStream.Read(sourceEntity->uid);
+		return; // Ignore remaining bits
+	}
+
 	Entity* entity = new Entity();
 	entity->ownerScene = this;
 	entity->DeserializeCreate(bitStream);
@@ -70,6 +81,8 @@ void Scene::SerializeSnapshot(RakNet::BitStream& bitStream)
 	// Write the Scene id (looked up by the scene manager)
 	bitStream.Write(uid);
 
+	bitStream.Write(Time::Instance().TotalTime());
+
 	// Write the total number of enities
 	bitStream.Write((unsigned int)entities.size());
 
@@ -85,6 +98,11 @@ void Scene::SerializeSnapshot(RakNet::BitStream& bitStream)
 
 void Scene::DeserializeSnapshot(RakNet::BitStream& bitStream)
 {
+	float _totalTime = 0.0f;
+	bitStream.Read(_totalTime);
+	Time::Instance().SetTotalTime(_totalTime);
+	Time::Instance().currentServerTick = _totalTime;
+
 	unsigned int numberOfEntities = -1;
 	bitStream.Read(numberOfEntities);
 
@@ -110,6 +128,36 @@ void Scene::DeserializeSnapshot(RakNet::BitStream& bitStream)
 			entity->ownerScene = this;
 			entity->DeserializeCreate(bitStream);
 			entities.push_back(entity);
+		}
+	}
+}
+
+void Scene::SerializeTransforms(RakNet::BitStream& bitStream)
+{
+	bitStream.Write((unsigned int)entities.size());
+	for (Entity* entity : entities)
+	{
+		bitStream.Write(entity->uid);
+		entity->GetTransform().Serialize(bitStream);
+	}
+}
+
+void Scene::DeserializeSyncTransforms(RakNet::BitStream& bitStream)
+{
+	unsigned int entityCount = 0;
+	bitStream.Read(entityCount);
+
+	for (int i = 0; i < entityCount; i++)
+	{
+		STRCODE entityUid;
+		bitStream.Read(entityUid);
+
+		Entity* foundEntity = FindEntity(entityUid);
+		if (foundEntity != nullptr) {
+			foundEntity->GetTransform().DeserializePredict(bitStream);
+		}
+		else {
+			LOG("SYNC ENTITY NOT FOUND");
 		}
 	}
 }
@@ -233,17 +281,6 @@ void Scene::PostUpdate()
 		{
 			entity->PostUpdate();
 		}
-	}
-}
-
-void Scene::UpdateTransformSync()
-{
-	if (!shouldTransformSync) {
-		timerTransformSync += Time::Instance().DeltaTime();
-	}
-	if (timerTransformSync > transformSyncInterval) {
-		shouldTransformSync = true;
-		LOG("SYNCING");
 	}
 }
 
