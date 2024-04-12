@@ -79,7 +79,7 @@ private:
 private:
 	bool shouldTransformSync = true;
 	float timerTransformSync = 0.0f;
-	float transformSyncInterval = 1.0f;
+	float transformSyncInterval = 2.0f;
 };
 
 #endif // !_SCENE_MANAGER_H_

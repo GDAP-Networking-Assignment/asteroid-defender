@@ -5,7 +5,7 @@
 void Time::Initialize()
 {
 	beginTime = std::chrono::system_clock().now();
-	endTime = std::chrono::system_clock().now();
+	endTime = beginTime;
 
 	deltaTime = std::chrono::duration<float>(0);
 	totalTime = std::chrono::duration<float>(0);
@@ -32,4 +32,8 @@ void Time::Update()
 	beginTime = endTime;
 	totalTime += deltaTime;
 	frameCount++;
+
+	if (NetworkEngine::Instance().IsClient()) {
+		currentServerTick += DeltaTime();
+	}
 }

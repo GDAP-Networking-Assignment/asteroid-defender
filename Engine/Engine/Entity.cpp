@@ -9,6 +9,7 @@ IMPLEMENT_DYNAMIC_CLASS(Entity)
 
 void Entity::Initialize()
 {
+	transform.owner = this;
 	transform.Initialize();
 	for (const auto component : components)
 	{

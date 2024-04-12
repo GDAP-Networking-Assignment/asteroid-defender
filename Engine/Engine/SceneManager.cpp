@@ -75,7 +75,6 @@ void SceneManager::Initialize()
 void SceneManager::NetworkUpdate()
 {
 	timerTransformSync += Time::Instance().DeltaTime();
-
 	if (timerTransformSync > transformSyncInterval) {
 		timerTransformSync = 0;
 		RakNet::BitStream bs;
@@ -85,6 +84,7 @@ void SceneManager::NetworkUpdate()
 		bs.Write(SceneManager::Instance().activeSceneId);
 		SceneManager::Instance().activeScene->SerializeTransforms(bs);
 		NetworkEngine::Instance().SendPacket(bs);
+		LOG("Sending Sync");
 	}
 }
 
@@ -181,13 +181,13 @@ void SceneManager::ProcessPacket(RakNet::BitStream& bitStream)
 		}
 
 		case MSG_SYNC:
-			int timestamp = 0;
-			bitStream.Read(timestamp);
+			Time::Instance().lastServerTick = Time::Instance().currentServerTick;
+			bitStream.Read(Time::Instance().currentServerTick);
 			STRCODE sceneUid = 0;
 			bitStream.Read(sceneUid);
 			for (Scene* scene : loadedScenes) {
 				if (scene->uid == sceneUid) {
-					scene->DeserializeSyncTransforms(bitStream, timestamp);
+					scene->DeserializeSyncTransforms(bitStream);
 				}
 			}
 			break;

@@ -171,7 +171,10 @@ float Vec2::Distance(const Vec2& lhs, const Vec2& rhs)
 
 Vec2 Vec2::Lerp(const Vec2& lhs, const Vec2& rhs, float t)
 {
-	return lhs + (rhs - lhs) * t;
+	const float minT = 1e-6f; // Small positive value
+	float clampedT = std::max(t, minT);
+
+	return lhs + (rhs - lhs) * clampedT;
 }
 
 IVec2 IVec2::Zero = IVec2();

@@ -23,35 +23,23 @@ void Player::Update()
 	if (NetworkEngine::Instance().IsClient()) {
 		HandleInput();
 		HandleFire();
-		if (movement != Vec2::Zero) {
-			//SendRPC();
-		}
 		return;
 	}
 
-	if (movement != Vec2::Zero) {
-		// Move the player
-		if (networkedEntity) {
-			networkedEntity->GetTransform().position += movement;
-		}
-		owner->GetTransform().position += movement;
-
-		if (collider == nullptr)
-		{
-			LOG("No collider");
-			return;
-		}
-		for (const auto& other : collider->OnCollisionEnter())
-		{
-			if (other->GetOwner()->GetName() != "Enemy")
-			{
-				continue;
-			}
-
-			// Take Damage
-		}
+	if (collider == nullptr)
+	{
+		LOG("No collider");
+		return;
 	}
-	movement = Vec2::Zero;
+	for (const auto& other : collider->OnCollisionEnter())
+	{
+		if (other->GetOwner()->GetName() != "Enemy")
+		{
+			continue;
+		}
+
+		// Take Damage
+	}
 }
 
 
@@ -72,47 +60,6 @@ void Player::Load(json::JSON& node)
 
 void Player::HandleInput()
 {
-	movement = Vec2::Zero;
-	float deltaSpeed = speed * Time::Instance().DeltaTime();
-	const InputSystem& input = InputSystem::Instance();
-
-	if (input.IsKeyPressed(SDLK_RETURN) && networkedEntity == nullptr)
-	{
-		LOG("Explode");
-
-		networkedEntity = SceneManager::Instance().CreateEntity();
-		Sprite* sprite = (Sprite*)networkedEntity->CreateComponent("Sprite");
-		TextureAsset* asset = (TextureAsset*)AssetManager::Instance().GetAsset("Explosion_435e0fce-7b11-409c-858e-af4bd7fe99c0");
-		sprite->SetTextureAsset(asset);
-	}
-
-	// Handle horizontal movement
-	if (input.IsKeyPressed(SDLK_LEFT) || input.IsKeyPressed(SDLK_a)) {
-		movement.x -= deltaSpeed;
-		if (networkedEntity) networkedEntity->GetTransform().position.x -= 1;
-	}
-	if (input.IsKeyPressed(SDLK_RIGHT) || input.IsKeyPressed(SDLK_d)) {
-		movement.x += deltaSpeed;
-		if (networkedEntity) networkedEntity->GetTransform().position.x += 1;
-	}
-
-	// Handle vertical movement
-	if (input.IsKeyPressed(SDLK_UP) || input.IsKeyPressed(SDLK_w)) {
-		movement.y -= deltaSpeed;
-		if (networkedEntity) networkedEntity->GetTransform().position.y -= 1;
-	}
-	if (input.IsKeyPressed(SDLK_DOWN) || input.IsKeyPressed(SDLK_s)) {
-		movement.y += deltaSpeed;
-		if (networkedEntity) networkedEntity->GetTransform().position.y += 1;
-	}
-
-	// Normalize the direction vector if it's not zero
-	if (movement != Vec2::Zero) {
-		movement.Normalize();
-	#ifdef DEBUG_PLAYER
-			LOG("Input: " << dir.x << ", " << dir.y);
-	#endif
-	}
 }
 
 void Player::HandleFire() {

@@ -70,6 +70,8 @@ void Scene::SerializeSnapshot(RakNet::BitStream& bitStream)
 	// Write the Scene id (looked up by the scene manager)
 	bitStream.Write(uid);
 
+	bitStream.Write(Time::Instance().TotalTime());
+
 	// Write the total number of enities
 	bitStream.Write((unsigned int)entities.size());
 
@@ -85,6 +87,11 @@ void Scene::SerializeSnapshot(RakNet::BitStream& bitStream)
 
 void Scene::DeserializeSnapshot(RakNet::BitStream& bitStream)
 {
+	float _totalTime = 0.0f;
+	bitStream.Read(_totalTime);
+	Time::Instance().SetTotalTime(_totalTime);
+	Time::Instance().currentServerTick = _totalTime;
+
 	unsigned int numberOfEntities = -1;
 	bitStream.Read(numberOfEntities);
 
@@ -124,7 +131,7 @@ void Scene::SerializeTransforms(RakNet::BitStream& bitStream)
 	}
 }
 
-void Scene::DeserializeSyncTransforms(RakNet::BitStream& bitStream, float timestamp)
+void Scene::DeserializeSyncTransforms(RakNet::BitStream& bitStream)
 {
 	unsigned int entityCount = 0;
 	bitStream.Read(entityCount);
@@ -136,7 +143,10 @@ void Scene::DeserializeSyncTransforms(RakNet::BitStream& bitStream, float timest
 
 		Entity* foundEntity = FindEntity(entityUid);
 		if (foundEntity != nullptr) {
-			foundEntity->GetTransform().DeserializePredict(bitStream, timestamp);
+			foundEntity->GetTransform().DeserializePredict(bitStream);
+		}
+		else {
+			LOG("SYNC ENTITY NOT FOUND");
 		}
 	}
 }

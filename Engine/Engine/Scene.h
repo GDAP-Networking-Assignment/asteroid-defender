@@ -44,7 +44,7 @@ protected:
 	void InvokeRPC(RakNet::BitStream& bitStream);
 
 	void SerializeTransforms(RakNet::BitStream& bitStream);
-	void DeserializeSyncTransforms(RakNet::BitStream& bitStream, float timestamp);
+	void DeserializeSyncTransforms(RakNet::BitStream& bitStream);
 
 private:
 	// Only enabled scenes get updated & rendered

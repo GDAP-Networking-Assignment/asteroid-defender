@@ -20,6 +20,7 @@ extern void Engine_Register();
 void Engine::Initialize(int _ServerOrClient)
 {
 	Engine_Register();
+	Time::Instance().Initialize();
 	NetworkEngine::Instance().Initialize(_ServerOrClient == 0);
 
 	// Load the managers

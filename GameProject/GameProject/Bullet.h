@@ -28,7 +28,7 @@ private:
     STRCODE game_over_scene = -1;
 
 public:
-    float speed = 50.0f;
+    float speed = 100.0f;
     Vec2 direction;
 };
 

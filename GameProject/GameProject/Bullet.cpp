@@ -1,5 +1,6 @@
 #include "GameCore.h"
 #include "Bullet.h"
+#include "NetworkEngine.h"
 
 #define NDEBUG_BULLET
 
@@ -18,9 +19,16 @@ void Bullet::Initialize()
         (TextureAsset*)AssetManager::Instance().GetAsset("Laser_2ffefe30-b2b5-4cfa-98d1-2cf6a6f7930e")
     );
     owner->GetTransform().Rotate(RAD_TO_DEG(direction.Angle())+90);
+
+    owner->GetTransform().velocity = direction * speed;
+
 }
 void Bullet::Update() {
-    owner->GetTransform().position += direction * (speed * Time::Instance().DeltaTime());
+    Component::Update();
+    // Client side movement for sync testing
+    if (NetworkEngine::Instance().IsClient() && InputSystem::Instance().IsKeyPressed(SDLK_SPACE)) {
+        owner->GetTransform().position.y += 400*Time::Instance().DeltaTime();
+    }
 
     if (collider == nullptr)
     {
@@ -35,6 +43,7 @@ void Bullet::Update() {
         owner->GetParentScene()->RemoveEntity(uid);
     }
 }
+
 void Bullet::Load(json::JSON& node)
 {
     Component::Load(node);

@@ -13,6 +13,7 @@ public:
 	float DeltaTime() { return deltaTime.count(); }
 	float TotalTime() { return totalTime.count(); }
 	unsigned int FrameCount() { return frameCount; }
+	void SetTotalTime(float _time) { totalTime = std::chrono::duration<float>(_time); }
 
 private:
 	void Initialize();
@@ -25,6 +26,12 @@ private:
 	std::chrono::duration<float> totalTime = std::chrono::duration<float>(0.0f);
 	std::chrono::time_point<std::chrono::system_clock> beginTime;
 	std::chrono::time_point<std::chrono::system_clock> endTime;
+
+
+// Client
+public:
+	float lastServerTick = 0.0f;
+	float currentServerTick = 0.0f;
 
 	friend class Engine;
 };
