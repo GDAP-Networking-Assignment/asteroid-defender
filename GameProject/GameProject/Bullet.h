@@ -19,7 +19,7 @@ public:
 private:
     BoxCollider* collider = nullptr;
     Sprite* sprite = nullptr;
-
+    int damage = 35;
     STRCODE game_over_scene = -1;
 
 public:

@@ -12,6 +12,7 @@ class AsteroidSmall : public Asteroid {
 
 public:
     void Initialize() override;
+    void TakeDamage(int damage);
 };
 
 #endif

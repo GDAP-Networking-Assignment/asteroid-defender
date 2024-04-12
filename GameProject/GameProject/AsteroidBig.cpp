@@ -11,3 +11,12 @@ void AsteroidBig::Initialize()
 		(TextureAsset*)AssetManager::Instance().GetAsset("MeteorBig_a7319cea-2d19-4515-b910-7d10f6df0ec3")
 	);
 }
+
+void AsteroidBig::TakeDamage(int damage)
+{
+	health -= damage;
+	if (health <= 0)
+	{
+		SceneManager::Instance().RemoveEntity(owner->GetUid()); // Destroy big asteroid
+	}
+}

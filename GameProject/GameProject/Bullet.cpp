@@ -32,11 +32,23 @@ void Bullet::Update() {
     // Collision
     for (const auto& other : collider->OnCollisionEnter())
     {
-        if (other->GetOwner()->GetName() == "Asteroid") {
-            LOG(owner->GetName() << ":" << other->GetOwner()->GetName());
-            SceneManager::Instance().RemoveEntity(other->GetOwner()->GetUid()); // Remove asteroid
-            SceneManager::Instance().RemoveEntity(owner->GetUid()); // Remove bullet
-            break; // Since bullet is destroyed, no need to check for more collisions
+        Entity* hitEntity = other->GetOwner();
+        if (hitEntity) {
+            if (hitEntity->GetName() == "Asteroid") {
+                AsteroidBig* asteroidBig = hitEntity->GetComponent<AsteroidBig>();
+                if (asteroidBig) {
+                    asteroidBig->TakeDamage(50);
+                    SceneManager::Instance().RemoveEntity(owner->GetUid());
+                    break;
+                }
+                AsteroidSmall* asteroidSmall = hitEntity->GetComponent<AsteroidSmall>();
+                if (asteroidSmall) {
+                    asteroidSmall->TakeDamage(50);
+                    SceneManager::Instance().RemoveEntity(owner->GetUid());
+                    break;
+                }
+            }
+           \
         }
     }
 }
