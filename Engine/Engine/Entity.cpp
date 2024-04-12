@@ -159,6 +159,7 @@ void Entity::Load(json::JSON& node)
 			component->Load(component_json["ClassData"]);
 		}
 	}
+
 }
 
 void Entity::PreUpdate()
@@ -274,3 +275,4 @@ bool Entity::RemoveComponent(const Component* component)
 	}
 	return false;
 }
+

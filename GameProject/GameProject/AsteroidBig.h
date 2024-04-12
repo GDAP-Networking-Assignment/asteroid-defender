@@ -11,6 +11,7 @@ class AsteroidBig : public Asteroid
 
 	public:
 		void Initialize() override;
+		void TakeDamage(int damage);
 };
 
 #endif

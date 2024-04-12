@@ -8,6 +8,7 @@ IMPLEMENT_DYNAMIC_CLASS(Asteroid)
 
 void Asteroid::Initialize() {
 	Component::Initialize();
+	this->owner->SetName("Asteroid");
 	owner->SetName("Asteroid");
 	sprite = (Sprite*)owner->CreateComponent("Sprite");
 	collider = (BoxCollider*)owner->CreateComponent("BoxCollider");
@@ -41,4 +42,13 @@ void Asteroid::Initialize() {
 	 ownerTransform.position.x = static_cast<float>(rand() % screenWidth);
 	 ownerTransform.position.y = 0;
 	 ownerTransform.velocity.y = speed;
+ }
+
+ void Asteroid::TakeDamage(int damage)
+ {
+
+	  health -= damage;
+    if (health <= 0) {
+        SceneManager::Instance().RemoveEntity(owner->GetUid()); // Destroy asteroid
+    }
  }
