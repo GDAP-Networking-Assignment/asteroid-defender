@@ -381,6 +381,7 @@ bool Scene::RemoveEntity(STRCODE entityId)
 	{
 		if (entity->GetUid() == entityId)
 		{
+			LOG("Removing: " << entity->GetName())
 			entitiesToDestroy.push_back(entity);
 			return true;
 		}

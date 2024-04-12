@@ -15,6 +15,7 @@ void Bullet::Initialize()
         (TextureAsset*)AssetManager::Instance().GetAsset("Laser_2ffefe30-b2b5-4cfa-98d1-2cf6a6f7930e")
     );
     collider = (BoxCollider*)owner->CreateComponent("BoxCollider");
+    owner->GetTransform().RotateToVelocity(90.0f);
 }
 void Bullet::Update() {
     Component::Update();
@@ -24,15 +25,15 @@ void Bullet::Update() {
     // Offscreen removal
     Vec2& ownerPosition = owner->GetTransform().position;
     IVec2 windowSize = RenderSystem::Instance().GetWindowSize();
-    if (ownerPosition.y < 0 || ownerPosition.y < windowSize.x ||
-        ownerPosition.x < 0 || ownerPosition.x > windowSize.y) {
+    if (ownerPosition.y < 0 || ownerPosition.y > windowSize.y ||
+        ownerPosition.x < 0 || ownerPosition.x > windowSize.x) {
         SceneManager::Instance().RemoveEntity(owner->GetUid());
     }
     // Collision
     for (const auto& other : collider->OnCollisionEnter())
     {
-        LOG(owner->GetName() << ":" << other->GetOwner()->GetName());
         if (other->GetOwner()->GetName() == "Asteroid") {
+            LOG(owner->GetName() << ":" << other->GetOwner()->GetName());
             SceneManager::Instance().RemoveEntity(other->GetOwner()->GetUid()); // Remove asteroid
             SceneManager::Instance().RemoveEntity(owner->GetUid()); // Remove bullet
             break; // Since bullet is destroyed, no need to check for more collisions
@@ -55,5 +56,4 @@ void Bullet::SetTarget(Vec2 target) {
         direction.Normalize();
     }
     owner->GetTransform().velocity = direction * speed;
-    owner->GetTransform().RotateToVelocity(90.0f);
 }

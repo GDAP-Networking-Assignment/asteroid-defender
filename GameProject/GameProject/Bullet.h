@@ -23,7 +23,7 @@ private:
     STRCODE game_over_scene = -1;
 
 public:
-    float speed = 100.0f;
+    float speed = 300.0f;
 };
 
 #endif // _Bullet_H_

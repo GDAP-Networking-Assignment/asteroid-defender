@@ -21,7 +21,6 @@ void Asteroid::Initialize() {
 	 // SERVER Collision Detection and removal
 	 if (NetworkEngine::Instance().IsClient()) return;
 	 for (const auto& other : collider->OnCollisionEnter()) {
-		 //LOG(owner->GetName() << ":" << other->GetOwner()->GetName());
 		 if (other->GetOwner()->GetName() == "Player") {
 			 // Mark both the asteroid and the player for removal
 			 SceneManager::Instance().RemoveEntity(owner->GetUid());

@@ -92,7 +92,7 @@ void Player::RPCSpawnBullet(RakNet::BitStream& bitStream)
 {
 	Entity* entityBullet = SceneManager::Instance().CreateEntity();
 	Bullet* bullet = (Bullet*)entityBullet->CreateComponent("Bullet");
-	entityBullet->SetName("Bullet");
+	//entityBullet->SetName("Bullet");
 
 	bitStream.Read(entityBullet->networkUid);
 	Transform& entityTransform = entityBullet->GetTransform();
