@@ -12,7 +12,7 @@ void SceneManager::Load()
 
 	// Store mapping of scene id to scene path location
 	// SceneManager must know about every scene in existance
-	THROW_RUNTIME_ERROR(!sceneManagerJSON.hasKey("AllScenes"), "Scene Manager must have GIUD & path data of all available scenes.");
+	THROW_RUNTIME_ERROR(!sceneManagerJSON.hasKey("AllScenes"), "Scene Manager must have GUID & path data of all available scenes.");
 	json::JSON allScenes = sceneManagerJSON["AllScenes"];
 	for (json::JSON& sceneInfo : allScenes.ArrayRange())
 	{
@@ -152,7 +152,6 @@ void SceneManager::ProcessPacket(RakNet::BitStream& bitStream)
 		}
 		break;
 
-
 		case MSG_SNAPSHOT:
 		{
 			STRCODE sceneUid = 0;
@@ -179,6 +178,7 @@ void SceneManager::ProcessPacket(RakNet::BitStream& bitStream)
 				}
 			}
 		}
+		break;
 
 		case MSG_SYNC:
 			Time::Instance().lastServerTick = Time::Instance().currentServerTick;

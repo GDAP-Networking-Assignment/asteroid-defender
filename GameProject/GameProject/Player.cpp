@@ -73,9 +73,9 @@ void Player::HandleFire() {
 		const Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
 		Vec2 mousePos = { (float)mouseX, (float)mouseY };
 
-		Entity* newBullet = owner->GetParentScene()->CreateEntity();
-		Bullet* bullet = (Bullet*)newBullet->CreateComponent("Bullet");
-		newBullet->GetTransform().position = owner->GetTransform().position;
+		Entity* entityBullet = owner->GetParentScene()->CreateEntity();
+		Bullet* bullet = (Bullet*)entityBullet->CreateComponent("Bullet");
+		entityBullet->GetTransform().position = owner->GetTransform().position;
 		bullet->SetTarget(mousePos);
 
 		SendRPCSpawnBullet(bullet);
@@ -92,7 +92,8 @@ void Player::SendRPCSpawnBullet(Bullet* bullet)
 	bitStream.Write(GetUid());
 	bitStream.Write(GetHashCode("RPCSpawnBullet"));
 
-	// Serialize bullet position and velocity
+	// Serialize bullet
+	bitStream.Write(bullet->GetOwner()->GetUid());
 	Transform& bulletTransform = bullet->GetOwner()->GetTransform();
 	bitStream.Write(bulletTransform.position.x);
 	bitStream.Write(bulletTransform.position.y);
@@ -107,6 +108,7 @@ void Player::RPCSpawnBullet(RakNet::BitStream& bitStream)
 	Entity* entityBullet = SceneManager::Instance().CreateEntity();
 	Bullet* bullet = (Bullet*)entityBullet->CreateComponent("Bullet");
 
+	bitStream.Read(entityBullet->networkUid);
 	Transform& entityTransform = entityBullet->GetTransform();
 	bitStream.Read(entityTransform.position.x);
 	bitStream.Read(entityTransform.position.y);
