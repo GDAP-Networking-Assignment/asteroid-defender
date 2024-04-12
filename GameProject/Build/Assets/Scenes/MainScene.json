@@ -31,7 +31,7 @@
             "ClassName": "AsteroidSpawner",
             "ClassData": {
               "GUID": "11880b4d-720a-4386-aba3-851d3c76540b",
-              "SpawnRate": 1.0
+              "SpawnRate": 10.0
             }
           }
         ]

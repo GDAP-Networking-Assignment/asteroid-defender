@@ -38,23 +38,12 @@ void Scene::SerializeCreateEntity(Entity* entity, RakNet::BitStream& bitStream) 
 {
 	// Write the Scene id (looked up by the manager)
 	bitStream.Write(uid);
-	// Write client entity source id
-	bitStream.Write(entity->networkUid);
 	// Entity will write the id and other associated data
 	entity->SerializeCreate(bitStream);
 }
 
 void Scene::DeserializeCreateEntity(RakNet::BitStream& bitStream)
 {
-	// Check if entity already exists. If so, don't create and just match Uid with server
-	STRCODE sourceEntityUid = 0;
-	bitStream.Read(sourceEntityUid);
-	Entity* sourceEntity = FindEntity(sourceEntityUid);
-	if ( sourceEntity != nullptr) {
-		bitStream.Read(sourceEntity->uid);
-		return; // Ignore remaining bits
-	}
-
 	Entity* entity = new Entity();
 	entity->ownerScene = this;
 	entity->DeserializeCreate(bitStream);
@@ -81,8 +70,6 @@ void Scene::SerializeSnapshot(RakNet::BitStream& bitStream)
 	// Write the Scene id (looked up by the scene manager)
 	bitStream.Write(uid);
 
-	bitStream.Write(Time::Instance().TotalTime());
-
 	// Write the total number of enities
 	bitStream.Write((unsigned int)entities.size());
 
@@ -98,11 +85,6 @@ void Scene::SerializeSnapshot(RakNet::BitStream& bitStream)
 
 void Scene::DeserializeSnapshot(RakNet::BitStream& bitStream)
 {
-	float _totalTime = 0.0f;
-	bitStream.Read(_totalTime);
-	Time::Instance().SetTotalTime(_totalTime);
-	Time::Instance().currentServerTick = _totalTime;
-
 	unsigned int numberOfEntities = -1;
 	bitStream.Read(numberOfEntities);
 
@@ -132,6 +114,29 @@ void Scene::DeserializeSnapshot(RakNet::BitStream& bitStream)
 	}
 }
 
+void Scene::SerializeRemoveEntity(RakNet::BitStream& bitStream, STRCODE entityId) const
+{
+	bitStream.Write(uid);
+	bitStream.Write(entityId);
+}
+
+void Scene::DeserializeRemoveEntity(RakNet::BitStream& bitStream)
+{
+	STRCODE entityId = 0;
+	bitStream.Read(entityId);
+
+	Entity* entityToRemove = FindEntity(entityId);
+
+	if (entityToRemove != nullptr) {
+		entityToRemove->Destroy();
+		delete entityToRemove;
+		entities.remove(entityToRemove);
+	}
+	else {
+		LOG("Entity to remove not found");
+	}
+}
+
 void Scene::SerializeTransforms(RakNet::BitStream& bitStream)
 {
 	bitStream.Write((unsigned int)entities.size());
@@ -155,9 +160,6 @@ void Scene::DeserializeSyncTransforms(RakNet::BitStream& bitStream)
 		Entity* foundEntity = FindEntity(entityUid);
 		if (foundEntity != nullptr) {
 			foundEntity->GetTransform().DeserializePredict(bitStream);
-		}
-		else {
-			LOG("SYNC ENTITY NOT FOUND");
 		}
 	}
 }
@@ -269,6 +271,14 @@ void Scene::PostUpdate()
 {
 	for (Entity* entity : entitiesToDestroy)
 	{
+		if (NetworkEngine::Instance().IsServer()) {
+			RakNet::BitStream bs;
+			bs.Write((unsigned char)NetworkPacketIds::MSG_SCENE_MANAGER);
+			bs.Write((unsigned char)NetworkPacketIds::MSG_DESTROY_ENTITY);
+			bs.Write(uid);
+			bs.Write(entity->GetUid());
+			NetworkEngine::Instance().SendPacket(bs);
+		}
 		entity->Destroy();
 		delete entity;
 		entities.remove(entity);
@@ -381,7 +391,6 @@ bool Scene::RemoveEntity(STRCODE entityId)
 	{
 		if (entity->GetUid() == entityId)
 		{
-			LOG("Removing: " << entity->GetName())
 			entitiesToDestroy.push_back(entity);
 			return true;
 		}

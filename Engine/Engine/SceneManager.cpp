@@ -135,6 +135,21 @@ void SceneManager::ProcessPacket(RakNet::BitStream& bitStream)
 		}
 		break;
 
+		case NetworkPacketIds::MSG_DESTROY_ENTITY:
+		{
+			STRCODE sceneUid = 0;
+			bitStream.Read(sceneUid);
+			for (Scene* scene : loadedScenes)
+			{
+				if (scene->uid == sceneUid)
+				{
+					scene->DeserializeRemoveEntity(bitStream);
+					break;
+				}
+			}
+		}
+		break;
+
 		case NetworkPacketIds::MSG_CREATE_COMPONENT:
 		{
 			STRCODE sceneUid = 0;

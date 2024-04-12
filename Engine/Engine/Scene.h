@@ -34,6 +34,9 @@ protected:
 	void SerializeSnapshot(RakNet::BitStream& bitStream);
 	void DeserializeSnapshot(RakNet::BitStream& bitStream);
 
+	void SerializeRemoveEntity(RakNet::BitStream& bitStream, STRCODE entityId) const;
+	void DeserializeRemoveEntity(RakNet::BitStream& bitStream);
+
 	void Load(json::JSON&);
 	void Initialize();
 	void Destroy();
