@@ -26,10 +26,7 @@ private:
     bool fired = false;
 
 private:
-    void HandleInput();
     void HandleFire();
-
-    void RPCMove(RakNet::BitStream& bitStream);
 
     void SendRPCSpawnBullet(Bullet* bullet);
     void RPCSpawnBullet(RakNet::BitStream& bitStream);

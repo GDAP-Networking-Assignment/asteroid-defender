@@ -27,6 +27,7 @@ public:
 
     void Translate(const Vec2& delta);
     void Rotate(float delta);
+    void RotateToVelocity(float deltaOffset = 0);
     void Scale(const Vec2& delta);
     void DeserializePredict(RakNet::BitStream& bitStream);
 

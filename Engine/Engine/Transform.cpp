@@ -59,6 +59,11 @@ void Transform::Rotate(float delta)
 	rotation += delta;
 }
 
+void Transform::RotateToVelocity(float deltaOffset)
+{
+	rotation = RAD_TO_DEG(velocity.Angle()) + deltaOffset;
+}
+
 void Transform::Scale(const Vec2& delta)
 {
 	scale *= delta;

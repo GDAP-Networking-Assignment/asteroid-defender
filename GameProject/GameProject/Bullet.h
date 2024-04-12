@@ -18,9 +18,6 @@ public:
     void Load(json::JSON&) override;
     void SetTarget(Vec2 target);
 
-    void SerializeCreate(RakNet::BitStream& bitStream) const override;
-    void DeserializeCreate(RakNet::BitStream& bitStream) override;
-
 private:
     BoxCollider* collider = nullptr;
     Sprite* sprite = nullptr;
@@ -29,7 +26,6 @@ private:
 
 public:
     float speed = 100.0f;
-    Vec2 direction;
 };
 
 #endif // Bullet_H

@@ -14,14 +14,12 @@ void Player::Initialize()
 {
 	Component::Initialize();
 	collider = (BoxCollider*)owner->GetComponent("BoxCollider");
-	RegisterRPC(GetHashCode("RPC"), std::bind(&Player::RPCMove, this, std::placeholders::_1));
 	RegisterRPC(GetHashCode("RPCSpawnBullet"), std::bind(&Player::RPCSpawnBullet, this, std::placeholders::_1));
 }
 
 void Player::Update() 
 {
 	if (NetworkEngine::Instance().IsClient()) {
-		HandleInput();
 		HandleFire();
 		return;
 	}
@@ -42,8 +40,6 @@ void Player::Update()
 	}
 }
 
-
-
 void Player::Load(json::JSON& node)
 {
 	Component::Load(node);
@@ -56,10 +52,6 @@ void Player::Load(json::JSON& node)
 	{
 		game_over_scene = GetHashCode(node.at("DeathScene").ToString().c_str());
 	}
-}
-
-void Player::HandleInput()
-{
 }
 
 void Player::HandleFire() {
@@ -90,32 +82,22 @@ void Player::HandleFire() {
 	}
 }
 
-void Player::RPCMove(RakNet::BitStream& bitStream)
-{
-	float value = 0.0f;
-	bitStream.Read(value);
-	movement.x += value;
-	bitStream.Read(value);
-	movement.y += value;
-}
-
 void Player::SendRPCSpawnBullet(Bullet* bullet)
 {
 	RakNet::BitStream bitStream;
-
 	bitStream.Write((unsigned char)MSG_SCENE_MANAGER);
 	bitStream.Write((unsigned char)MSG_RPC);
-
 	bitStream.Write(owner->GetParentScene()->GetUid());
 	bitStream.Write(owner->GetUid());
 	bitStream.Write(GetUid());
 	bitStream.Write(GetHashCode("RPCSpawnBullet"));
 
-	bitStream.Write(bullet->GetOwner()->GetTransform().position.x);
-	bitStream.Write(bullet->GetOwner()->GetTransform().position.y);
-
-	bitStream.Write(bullet->direction.x);
-	bitStream.Write(bullet->direction.y);
+	// Serialize bullet position and velocity
+	Transform& bulletTransform = bullet->GetOwner()->GetTransform();
+	bitStream.Write(bulletTransform.position.x);
+	bitStream.Write(bulletTransform.position.y);
+	bitStream.Write(bulletTransform.velocity.x);
+	bitStream.Write(bulletTransform.velocity.y);
 
 	NetworkEngine::Instance().SendPacket(bitStream);
 }
@@ -125,14 +107,9 @@ void Player::RPCSpawnBullet(RakNet::BitStream& bitStream)
 	Entity* entityBullet = SceneManager::Instance().CreateEntity();
 	Bullet* bullet = (Bullet*)entityBullet->CreateComponent("Bullet");
 
-	// Position
-	Vec2 pos;
-	bitStream.Read(pos.x);
-	bitStream.Read(pos.y);
-	entityBullet->GetTransform().position.x = pos.x;
-	entityBullet->GetTransform().position.y = pos.y;
-
-	// Direction
-	bitStream.Read(bullet->direction.x);
-	bitStream.Read(bullet->direction.y);
+	Transform& entityTransform = entityBullet->GetTransform();
+	bitStream.Read(entityTransform.position.x);
+	bitStream.Read(entityTransform.position.y);
+	bitStream.Read(entityTransform.velocity.x);
+	bitStream.Read(entityTransform.velocity.y);
 }
