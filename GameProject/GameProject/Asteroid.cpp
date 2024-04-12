@@ -1,42 +1,45 @@
 #include "GameCore.h"
 #include "Asteroid.h"
+#include "BoxCollider.h"
 
 #define NDEBUG_PLAYER
 
- IMPLEMENT_ABSTRACT_CLASS(Asteroid)
-
-Asteroid::Asteroid() : velocity(0.0f, 50.0f), size(1.0f), screenWidth(800), screenHeight(600) {
-	 screenWidth = RenderSystem::Instance().GetWindowSize().x;
-	 screenHeight = RenderSystem::Instance().GetWindowSize().y;
-
-}
+IMPLEMENT_DYNAMIC_CLASS(Asteroid)
 
 void Asteroid::Initialize() {
 	Component::Initialize();
-
-	//collider = (BoxCollider*)owner->CreateComponent("BoxCollider");
-
-
-	size = 10; // Adjust the size of the asteroid as needed
-
+	owner->SetName("Asteroid");
+	sprite = (Sprite*)owner->CreateComponent("Sprite");
+	collider = (BoxCollider*)owner->CreateComponent("BoxCollider");
 }
 
-void Asteroid::Update() {
+ void Asteroid::Update()
+ {
+	 Component::Update();
+	 Vec2& ownerPosition = owner->GetTransform().position;
 
+	 // SERVER Collision Detection and removal
+	 if (NetworkEngine::Instance().IsClient()) return;
+	 for (const auto& other : collider->OnCollisionEnter()) {
+		 //LOG(owner->GetName() << ":" << other->GetOwner()->GetName());
+		 if (other->GetOwner()->GetName() == "Player") {
+			 // Mark both the asteroid and the player for removal
+			 SceneManager::Instance().RemoveEntity(owner->GetUid());
+			 SceneManager::Instance().RemoveEntity(other->GetOwner()->GetUid());
+			 break;
+		 }
+	 }
+	 int screenHeight = RenderSystem::Instance().GetWindowSize().y;
+	 if (ownerPosition.y > screenHeight) {
+		 SceneManager::Instance().RemoveEntity(owner->GetUid());
+	 }
+ }
 
-	
-}
-
-void Asteroid::SerializeProperties(RakNet::BitStream& bs) const {
-	bs.Write((RakNet::MessageID)MSG_CREATE_ASTEROID);
-	bs.Write(velocity.x);
-	bs.Write(velocity.y);
-	bs.Write(size);
-}
-
-void Asteroid::DeserializeProperties(RakNet::BitStream& bs) {
-	bs.Read(velocity.x);
-	bs.Read(velocity.y);
-	bs.Read(size);
-	// Apply these properties as needed
-}
+ void Asteroid::RandomizeSpawn()
+ {
+	 int screenWidth = RenderSystem::Instance().GetWindowSize().x;
+	 Transform& ownerTransform = owner->GetTransform();
+	 ownerTransform.position.x = static_cast<float>(rand() % screenWidth);
+	 ownerTransform.position.y = 0;
+	 ownerTransform.velocity.y = speed;
+ }

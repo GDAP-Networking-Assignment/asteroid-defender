@@ -14,6 +14,10 @@ void TextureAsset::Initialize()
 		texture = SDL_CreateTextureFromSurface(&RenderSystem::Instance().GetRenderer(), image);
 		SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
 	}
+	else {
+		width = image->w;
+		height = image->h;
+	}
 	SDL_FreeSurface(image);
 }
 

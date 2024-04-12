@@ -15,10 +15,6 @@ void Player::Initialize()
 	Component::Initialize();
 	collider = (BoxCollider*)owner->GetComponent("BoxCollider");
 	RegisterRPC(GetHashCode("RPCSpawnBullet"), std::bind(&Player::RPCSpawnBullet, this, std::placeholders::_1));
-
-
-
-
 }
 
 void Player::Update() 
@@ -26,21 +22,6 @@ void Player::Update()
 	if (NetworkEngine::Instance().IsClient()) {
 		HandleFire();
 		return;
-	}
-
-	if (collider == nullptr)
-	{
-		LOG("No collider");
-		return;
-	}
-	for (const auto& other : collider->OnCollisionEnter())
-	{
-		if (other->GetOwner()->GetName() != "Enemy")
-		{
-			continue;
-		}
-
-		// Take Damage
 	}
 }
 
@@ -111,6 +92,7 @@ void Player::RPCSpawnBullet(RakNet::BitStream& bitStream)
 {
 	Entity* entityBullet = SceneManager::Instance().CreateEntity();
 	Bullet* bullet = (Bullet*)entityBullet->CreateComponent("Bullet");
+	entityBullet->SetName("Bullet");
 
 	bitStream.Read(entityBullet->networkUid);
 	Transform& entityTransform = entityBullet->GetTransform();

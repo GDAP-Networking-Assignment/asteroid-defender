@@ -1,25 +1,12 @@
 #include "GameCore.h"
 #include "AsteroidSmall.h"
+#include "CircleCollider.h"
 
 IMPLEMENT_DYNAMIC_CLASS(AsteroidSmall);
 
 void AsteroidSmall::Initialize() {
-    // Initialization specific to SmallAsteroid
     Asteroid::Initialize();
-    //collider = (BoxCollider*)owner->CreateComponent("BoxCollider");
-    
-    size = 10; // Example size for a small asteroid
-    // Set small asteroid sprite and other properties
-}
-
-void AsteroidSmall::Update() {
-    // Update logic specific to SmallAsteroid
-   
-    Transform& transform = owner->GetTransform();
-    transform.position += velocity * Time::Instance().DeltaTime();
-
-    if (transform.position.y > screenHeight) {
-        transform.position.y = -size;
-        transform.position.x = static_cast<float>(rand() % screenWidth);
-    }
+    sprite->SetTextureAsset(
+        (TextureAsset*)AssetManager::Instance().GetAsset("MeteorSmall_48526c0d-ca5d-4681-8fe5-93726d5906fa")
+    );
 }

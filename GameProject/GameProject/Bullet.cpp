@@ -1,50 +1,40 @@
 #include "GameCore.h"
 #include "Bullet.h"
-#include "NetworkEngine.h"
+#include "BoxCollider.h"
 
 #define NDEBUG_BULLET
 
 IMPLEMENT_DYNAMIC_CLASS(Bullet)
 
-#include "AnimatedSprite.h"
-
 void Bullet::Initialize()
 {
     Component::Initialize();
-    collider = (BoxCollider*)owner->CreateComponent("BoxCollider");
     owner->SetName("Bullet");
-
     sprite = (Sprite*)owner->CreateComponent("Sprite");
     sprite->SetTextureAsset(
         (TextureAsset*)AssetManager::Instance().GetAsset("Laser_2ffefe30-b2b5-4cfa-98d1-2cf6a6f7930e")
     );
-
-    Transform& entityTransform = owner->GetTransform();
-    entityTransform.RotateToVelocity(90.0f);
+    collider = (BoxCollider*)owner->CreateComponent("BoxCollider");
 }
 void Bullet::Update() {
     Component::Update();
-    // Client side movement for sync testing
-    if (NetworkEngine::Instance().IsClient() && InputSystem::Instance().IsKeyPressed(SDLK_SPACE)) {
-        owner->GetTransform().position.y += 400*Time::Instance().DeltaTime();
-    }
 
-    if (collider == nullptr)
-    {
-        return;
+    // SERVER Collision Detection and removal
+    if (NetworkEngine::Instance().IsClient()) return;
+    // Offscreen removal
+    Vec2& ownerPosition = owner->GetTransform().position;
+    IVec2 windowSize = RenderSystem::Instance().GetWindowSize();
+    if (ownerPosition.y < 0 || ownerPosition.y < windowSize.x ||
+        ownerPosition.x < 0 || ownerPosition.x > windowSize.y) {
+        SceneManager::Instance().RemoveEntity(owner->GetUid());
     }
+    // Collision
     for (const auto& other : collider->OnCollisionEnter())
     {
-        if (other->GetOwner()->GetName() != "Enemy")
-        {
-            continue;
-        }
-        owner->GetParentScene()->RemoveEntity(uid);
-        if (other->GetOwner()->GetName().find("Asteroid") != std::string::npos) {
-            // Collision with asteroid detected
-            // Perform collision resolution, typically removing both entities
-            owner->GetParentScene()->RemoveEntity(owner->GetUid()); // Remove bullet
-            owner->GetParentScene()->RemoveEntity(other->GetOwner()->GetUid()); // Remove asteroid
+        LOG(owner->GetName() << ":" << other->GetOwner()->GetName());
+        if (other->GetOwner()->GetName() == "Asteroid") {
+            SceneManager::Instance().RemoveEntity(other->GetOwner()->GetUid()); // Remove asteroid
+            SceneManager::Instance().RemoveEntity(owner->GetUid()); // Remove bullet
             break; // Since bullet is destroyed, no need to check for more collisions
         }
     }
@@ -65,4 +55,5 @@ void Bullet::SetTarget(Vec2 target) {
         direction.Normalize();
     }
     owner->GetTransform().velocity = direction * speed;
+    owner->GetTransform().RotateToVelocity(90.0f);
 }

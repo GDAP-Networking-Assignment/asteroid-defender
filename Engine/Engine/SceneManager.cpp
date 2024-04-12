@@ -84,7 +84,6 @@ void SceneManager::NetworkUpdate()
 		bs.Write(SceneManager::Instance().activeSceneId);
 		SceneManager::Instance().activeScene->SerializeTransforms(bs);
 		NetworkEngine::Instance().SendPacket(bs);
-		LOG("Sending Sync");
 	}
 }
 
@@ -123,7 +122,6 @@ void SceneManager::ProcessPacket(RakNet::BitStream& bitStream)
 
 		case NetworkPacketIds::MSG_CREATE_ENTITY:
 		{
-			LOG("MSG_CREATE_ENTITY");
 			STRCODE sceneUid = 0;
 			bitStream.Read(sceneUid);
 			for (Scene* scene : loadedScenes)

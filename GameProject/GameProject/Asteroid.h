@@ -1,33 +1,24 @@
 #pragma once
-#include "GameCore.h"
-#include "Entity.h"
-#include "Component.h"
-#include "Transform.h"
-#include "NetworkEngine.h"
+#ifndef _ASTEROID_H_
+#define _ASTEROID_H_
 
+#include "GameCore.h"
+
+class BoxCollider;
 
 class Asteroid : public Component {
-
-    DECLARE_ABSTRACT_DERIVED_CLASS(Asteroid, Component);
+    DECLARE_DYNAMIC_DERIVED_CLASS(Asteroid, Component);
 
 public:
+    virtual void Initialize() override;
+    virtual void Update() override;
 
-
-
-    Asteroid(); // Constructor declaration
-
-    virtual void Initialize() override = 0;
-    virtual void Update() override = 0;
-
-    void SerializeProperties(RakNet::BitStream& bs) const;
-
-    void DeserializeProperties(RakNet::BitStream& bs);
+    void RandomizeSpawn();
 
 protected:
-    Vec2 velocity;
-    float size;
-    int screenWidth, screenHeight;
+    float speed = 100.0f;
     BoxCollider* collider = nullptr;
     Sprite* sprite = nullptr;
-    
 };
+
+#endif

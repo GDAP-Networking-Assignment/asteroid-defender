@@ -81,6 +81,18 @@ void Sprite::SetTextureAsset(TextureAsset* texAsset)
         size = texAsset->GetDimensions();
         sourceRect = { 0, 0, size.x, size.y };
     }
+
+    const Transform& transform = owner->GetTransform();
+    size = IVec2(transform.scale * IVec2(sourceRect.w, sourceRect.h)).Abs();
+    const IVec2 pos = transform.position - size / 2;
+    targetRect =
+    {
+        pos.x,
+        pos.y,
+        size.x,
+        size.y
+    };
+    flip = static_cast<SDL_RendererFlip>((transform.scale.x < 0) | ((transform.scale.y < 0) << 1));
 }
 
 void Sprite::Render()

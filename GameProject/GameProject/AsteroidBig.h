@@ -1,17 +1,17 @@
 #pragma once
+#ifndef _ASTEROID_BIG_H_
+#define _ASTEROID_BIG_H_
+
 #include "GameCore.h"
 #include "Asteroid.h"
 
 class AsteroidBig : public Asteroid
 {
 	DECLARE_DYNAMIC_DERIVED_CLASS(AsteroidBig, Asteroid)
+
 	public:
-		AsteroidBig();
-		virtual ~AsteroidBig() override;
-
-		virtual void Initialize() override;
-		virtual void Update() override;
-		
-
+		void Initialize() override;
 };
+
+#endif
 

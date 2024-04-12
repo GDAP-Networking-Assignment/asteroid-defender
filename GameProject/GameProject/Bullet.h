@@ -1,12 +1,10 @@
 #pragma once
-#ifndef BULLET_H
-#define BULLET_H
+#ifndef _BULLET_H_
+#define _BULLET_H_
 
 #include "GameCore.h"
-#include "TextureAsset.h"
-#include "Transform.h"
-#include "BoxCollider.h"
-#include "Sprite.h"
+
+class Sprite;
 
 class Bullet : public Component
 {
@@ -28,4 +26,4 @@ public:
     float speed = 100.0f;
 };
 
-#endif // Bullet_H
+#endif // _Bullet_H_
