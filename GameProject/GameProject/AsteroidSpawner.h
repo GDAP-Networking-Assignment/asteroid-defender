@@ -13,6 +13,6 @@ private:
     void SpawnAsteroid();
 
 private:
-    float spawnRate = 1.0f; // Seconds between spawns
+    float spawnRate = 0.7f; // Seconds between spawns
     float lastSpawnTime = 0.0f; // Timestamp of the last spawn
 };

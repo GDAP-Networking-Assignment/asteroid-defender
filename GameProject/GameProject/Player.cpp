@@ -13,30 +13,38 @@ IMPLEMENT_DYNAMIC_CLASS(Player)
 void Player::Initialize()
 {
 	Component::Initialize();
-	collider = (BoxCollider*)owner->GetComponent("BoxCollider");
+	sprite = (Sprite*)owner->CreateComponent("Sprite");
+	sprite->SetTextureAsset(
+		(TextureAsset*)AssetManager::Instance().GetAsset("Ship_c50b2792-24af-4981-bcfa-a0014762b813")
+	);
+	collider = (BoxCollider*)owner->CreateComponent("BoxCollider");
 	RegisterRPC(GetHashCode("RPCSpawnBullet"), std::bind(&Player::RPCSpawnBullet, this, std::placeholders::_1));
 }
 
 void Player::Update() 
 {
-	if (NetworkEngine::Instance().IsClient()) {
-		HandleFire();
-		return;
+	if (NetworkEngine::Instance().IsClient() && NetworkEngine::Instance().isGameStart) {
+		if (NetworkEngine::Instance().rakInterface->GetMyGUID().g == networkGuid) {
+			HandleFire();
+		}
 	}
 }
 
 void Player::Load(json::JSON& node)
 {
 	Component::Load(node);
-	if (node.hasKey("Speed"))
-	{
-		speed = static_cast<float>(node.at("Speed").ToFloat());
-	}
+}
 
-	if (node.hasKey("DeathScene"))
-	{
-		game_over_scene = GetHashCode(node.at("DeathScene").ToString().c_str());
-	}
+void Player::SerializeCreate(RakNet::BitStream& bitStream) const
+{
+	Component::SerializeCreate(bitStream);
+	bitStream.Write(networkGuid);
+}
+
+void Player::DeserializeCreate(RakNet::BitStream& bitStream)
+{
+	Component::DeserializeCreate(bitStream);
+	bitStream.Read(networkGuid);
 }
 
 void Player::HandleFire() {

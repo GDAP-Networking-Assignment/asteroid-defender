@@ -81,6 +81,7 @@ void Transform::DeserializePredict(RakNet::BitStream& bitStream)
 
 	// Predict position based on time since server sent packet
 	float delta = Time::Instance().currentServerTick - Time::Instance().lastServerTick;
+	delta += interpolationDuration;
 	interpolationTarget.position += interpolationTarget.velocity * delta;
 	runInterpolate = true;
 

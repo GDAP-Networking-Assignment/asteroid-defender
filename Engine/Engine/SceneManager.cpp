@@ -194,6 +194,10 @@ void SceneManager::ProcessPacket(RakNet::BitStream& bitStream)
 		break;
 
 		case MSG_SYNC:
+		{
+			if (NetworkEngine::Instance().serverReady == false) {
+				NetworkEngine::Instance().serverReady = true;
+			}
 			Time::Instance().lastServerTick = Time::Instance().currentServerTick;
 			bitStream.Read(Time::Instance().currentServerTick);
 			STRCODE sceneUid = 0;
@@ -204,6 +208,19 @@ void SceneManager::ProcessPacket(RakNet::BitStream& bitStream)
 				}
 			}
 			break;
+		}
+		break;
+
+		case MSG_START_GAME:
+		{
+			NetworkEngine::Instance().isGameStart = true;
+		}
+		break;
+
+		case MSG_GAME_OVER:
+		{
+			exit(0);
+		}
 
 		break;
 	}

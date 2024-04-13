@@ -15,12 +15,16 @@ public:
     void Initialize() override;
     void Update() override;
     void Load(json::JSON&) override;
+
+    void SerializeCreate(RakNet::BitStream& bitStream) const override;
+    void DeserializeCreate(RakNet::BitStream& bitStream) override;
+
 private:
     float speed = 5.0f;
+    Sprite* sprite = nullptr;
     BoxCollider* collider = nullptr;
     STRCODE game_over_scene = -1;
     Entity* networkedEntity = nullptr;
-
     float fireCooldown = 0.5;
     float fireCounter = 0;
     bool fired = false;
@@ -31,8 +35,8 @@ private:
     void SendRPCSpawnBullet(Bullet* bullet);
     void RPCSpawnBullet(RakNet::BitStream& bitStream);
 
-private:
-    Vec2 movement;
+public:
+    uint64_t networkGuid;
 };
 
 #endif // PLAYER_H

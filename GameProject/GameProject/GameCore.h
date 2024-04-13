@@ -25,5 +25,6 @@
 #include "AsteroidBig.h"
 #include "AsteroidSmall.h"
 #include "AsteroidFactory.h"
+#include "GameManager.h"
 
 #endif // !_GAME_CORE_H_

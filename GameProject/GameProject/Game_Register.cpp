@@ -10,5 +10,4 @@ void GameRegisterClasses()
 	REGISTER_TYPECLASS(AsteroidSmall);
 	REGISTER_TYPECLASS(AsteroidFactory);
 	REGISTER_TYPECLASS(Asteroid);
-
 }

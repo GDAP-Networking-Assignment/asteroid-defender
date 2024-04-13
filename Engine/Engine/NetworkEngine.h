@@ -17,7 +17,11 @@ class NetworkEngine {
 public:
     bool IsClient() { return isClient; }
     bool IsServer() { return isServer; }
+    bool serverReady = false;
+    bool isGameStart = false;
     void SendPacket(RakNet::BitStream& bs);
+    std::vector<RakNet::RakNetGUID> GetConnections() { return connections; }
+    RakNet::RakPeerInterface* rakInterface;
 
 private:
     int port;
@@ -26,7 +30,6 @@ private:
     std::string ipAddress;
     NetworkState state;
 
-    RakNet::RakPeerInterface* rakInterface;
     std::vector<RakNet::RakNetGUID> connections;
 
     friend class Engine;

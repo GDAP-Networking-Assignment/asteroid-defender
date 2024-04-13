@@ -22,10 +22,11 @@ void Asteroid::Initialize() {
 	 // SERVER Collision Detection and removal
 	 if (NetworkEngine::Instance().IsClient()) return;
 	 for (const auto& other : collider->OnCollisionEnter()) {
-		 if (other->GetOwner()->GetName() == "Player") {
-			 // Mark both the asteroid and the player for removal
-			 SceneManager::Instance().RemoveEntity(owner->GetUid());
-			 SceneManager::Instance().RemoveEntity(other->GetOwner()->GetUid());
+		 if (other->GetOwner()->HasComponent("Player")) {
+			 RakNet::BitStream bitStream;
+			 bitStream.Write((unsigned char)NetworkPacketIds::MSG_SCENE_MANAGER);
+			 bitStream.Write((unsigned char)NetworkPacketIds::MSG_GAME_OVER);
+			 NetworkEngine::Instance().SendPacket(bitStream);
 			 break;
 		 }
 	 }
@@ -41,13 +42,16 @@ void Asteroid::Initialize() {
 	 Transform& ownerTransform = owner->GetTransform();
 	 ownerTransform.position.x = static_cast<float>(rand() % screenWidth);
 	 ownerTransform.position.y = 0;
-	 ownerTransform.velocity.y = speed;
+
+	 float randomAngle = static_cast<float>(std::rand())*M_PI / RAND_MAX;
+	 Vec2 downVector = Vec2(cos(randomAngle), sin(randomAngle));
+	 downVector.Normalize();
+	 ownerTransform.velocity = downVector*speed;
  }
 
  void Asteroid::TakeDamage(int damage)
  {
-
-	  health -= damage;
+	health -= damage;
     if (health <= 0) {
         SceneManager::Instance().RemoveEntity(owner->GetUid()); // Destroy asteroid
     }
